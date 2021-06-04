@@ -1,4 +1,5 @@
-$(document).ready(function () {
+$( document ).ready(function() {
+
     console.log("ready steady!");
     var diagramDiv = d3.select("#building-diagram");
 
@@ -41,11 +42,10 @@ $(document).ready(function () {
         interactive: false
     });
 
-
 });
 
 
-const buildingsvg = '<svg id="stack-svg" viewBox="0 0 288 560" preserveAspectRatio="xMinYMin meet">' +
+const buildingsvg = '<svg id="stack-svg" viewBox="0 0 288 560" preserveAspectRatio="xMidYMid meet">' +
     '<g id="base">' +
     '<path class="base" d="M270.8,547.2H131l0.6-30.4c3.9,1.6,137.7,5.6,137.7,5.6L270.8,547.2z"/>' +
     '<polygon class="base" points="131.9,499.5 131.6,516.8 131.5,516.8 13.9,520.6 14.7,509.3 131.9,499.5 	"/>' +
