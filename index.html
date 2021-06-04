@@ -5,6 +5,9 @@
     <title>Stack test</title>
     <!--<link rel="stylesheet" href="styles.css">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!--The sketch-->
 </head>
 <body>
@@ -12,36 +15,7 @@
         <div id="page">
             <div class="kicker">Stack Test</div>
 
-<div id="availabilities" class="margin larger"><div class="w-layout-grid alignment-grid"><div id="building-diagram" class="building-frame w-node-_9e664a7e-3516-1b4f-5208-d46a18b27bc9-fafc9028"></div><div id="w-node-_73b91a8d-de79-6fcd-f297-9794c90f3552-fafc9028"><div class="w-layout-grid availability-table-row atr-header"><div class="header-label">floor</div><div class="header-label">unit</div><div class="header-label">rsf</div><div class="header-label">Available</div></div><div class="w-dyn-list"><div id="availability-table" role="list" class="w-dyn-items"><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>1820</div><div>1820</div><div>18,735</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/1820" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>1420</div><div>1420</div><div>3,378</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/1420" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>1010</div><div>1010</div><div>3,604</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/1010" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>810A</div><div>810A</div><div>4,164</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/810a" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>800</div><div>800</div><div>7,557</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/800" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>830</div><div>830</div><div>3,701</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/830" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>GR60</div><div>GR60</div><div>931</div><div>Month To Month</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/gr60" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div><div data-w-id="d04fd053-44b9-faf7-43d0-5efe6208de4c" style="opacity: 1;" role="listitem" class="availability-item w-dyn-item"><div class="availability-row"><div class="w-layout-grid availability-table-row"><div>GR10</div><div>GR10</div><div>1,249</div><div>Immediate</div><a id="w-node-_48563f7b-f16c-4464-9966-56ae035c91f4-fafc9028" href="/availability/gr10" class="text-link w-inline-block"><div>Floor Plan →</div><div class="tl-underline" style="width: 100%;"></div></a><a id="w-node-_22994619-7db0-4dcb-4f27-786f8b5f76e1-fafc9028" href="#" class="text-link w-inline-block"><div>Virtual Tour→</div><div class="tl-underline" style="width: 100%;"></div></a></div></div></div></div></div></div></div></div>
-
-
-
-
-
-
-
-
-
-
-
-            <div id="stage" class="svg-stage"  style="width: 50%;">
-                <style>
-                    .suites {
-                    display: block;
-                    }
-
-
-                    .suite-hidden {
-                    visibility: hidden;
-                    }
-
-                    .base{fill:#FFFFFF;}
-                    .suite{fill:#1ED4E2; fill-opacity: 0.25;}
-                    .suite-hover{fill:#1ED4E2; opacity: 0.75;}
-                    .huh{opacity:0.5;}
-                    .detail-lines{fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-                    .building-outline{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-                </style>
+           <div id="stage" class="svg-stage"  style="width: 50%;">
                 <script>
                     $( document ).ready(function() {
                         console.log( "ready!" );
@@ -353,22 +327,9 @@
                 </svg>
             </div>
             <div id="mapbox-holder">
-                <script src="https://d3js.org/d3.v6.min.js"></script>
-                <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
                 <script>
-                    $( document ).ready(function() {
-                        mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
-                        var map = new mapboxgl.Map({
-                        container: 'map',
-                        style: 'mapbox://styles/cizzle/ckp5swexc0t0k17qcolpk960i',
-                        center: [-74.033216, 40.716560], // starting position [lng, lat]
-                        zoom: 17, // starting zoom
-                        bearing: -44.68, //bearing
-                        pitch: 50.50,
-                        interactive: false
-                        });
-                })
+
                 </script>
                 <div id='map' style='width: 100%; height: 1000px;'></div>
             </div>

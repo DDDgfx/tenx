@@ -28,9 +28,6 @@ h1, h2, h3 {
 
 
 
-
-
-
 /*flex basics*/
 .flex-holder {
     background-color: white;
@@ -87,3 +84,41 @@ h1, h2, h3 {
     /*text-transform: uppercase;*/
 }
 
+
+
+.suites {
+  display: block;
+}
+
+
+.suite-hidden {
+  visibility: hidden;
+}
+.base{
+  fill:#FFFFFF;
+}
+.suite{
+  fill:#1ED4E2; fill-opacity: 0.25;
+}
+.suite-hover{
+  fill:#1ED4E2; opacity: 0.75;
+}
+.huh{
+  opacity:0.5;
+}
+.detail-lines{
+  fill:none;
+  stroke:#000000;
+  stroke-width:0.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-miterlimit:10;
+}
+
+.building-outline{
+  fill:none;
+  stroke:#000000;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-miterlimit:10;
+}
