@@ -1,8 +1,10 @@
 $(document).ready(function () {
-    console.log("ready!");
+    console.log("ready steady!");
     var diagramDiv = d3.select("#building-diagram");
+
     diagramDiv.html(buildingsvg);
     svg = d3.select("#stack-svg");
+    console.log(svg);
 
     var suites = svg.selectAll(".suites");
 
