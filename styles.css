@@ -1,0 +1,89 @@
+/*--BASIC STYLES--*/
+
+body {
+    font-family: Whitney;
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+}
+
+/*--FRAMEWORK STYLES--*/
+.center-container {
+  display: flex;
+  justify-content: center;
+}
+
+#page {
+    /*width: 960px;*/
+    width: 100%;
+}
+
+.svg-stage {
+    /*background-color: pink;*/
+    border: 1px dotted LightGrey;
+    /*width: 960px;*/
+    /*cursor: crosshair;*/
+}
+
+
+
+
+
+
+/*flex basics*/
+.flex-holder {
+    background-color: white;
+    padding-top: 8px;
+}
+.flex-container {
+  display: flex;
+}
+.flex-container-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+
+
+
+
+
+
+
+
+/*<>COPY STYLES<>*/
+.kicker {
+    color: grey;
+    margin-bottom: 6px;
+    font-weight: 100;
+}
+
+.gfx-head {
+    font-size: 36px;
+    font-weight: 600;
+    text-anchor: start;
+    text-transform: uppercase;
+}
+
+.rev-txt {
+  fill: white;
+  fill-opacity: .5;
+  font-weight: 300;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.centroid-label {
+    color: white;
+    fill: white;
+    font-size: 8px;
+    font-weight: 600;
+    text-anchor: middle;
+    /*text-transform: uppercase;*/
+}
+
