@@ -17,18 +17,42 @@ h1, h2, h3 {
   flex-grow: 1; /* default 0 */
 }
 
-.availability-table-row {
-  display: flex;
+.availability-row {
+  display: block;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  -webkit-transition: all 350ms ease;
+  transition: all 350ms ease;
+  color: #141414;
+  text-decoration: none;
 }
+
+.w-layout-grid {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-columns: 1fr;
+  -ms-grid-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  -ms-grid-rows: auto auto;
+  grid-template-rows: auto auto;
+  grid-row-gap: 16px;
+  grid-column-gap: 16px;
+}
+
+
+
+.availability-table-row {
+  grid-column-gap: 6px;
+  grid-row-gap: 6px;
+  -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  display: grid;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+}
+
 
 #building-diagram {
-  height: 500px;
-}
-
-/*<>COPY STYLES<>*/
-.kicker {
-    color: grey;
-    margin-bottom: 6px;
-    font-weight: 100;
+  height: 700px;
 }
 
