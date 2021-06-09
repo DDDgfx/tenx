@@ -19,7 +19,7 @@ h1, h2, h3 {
 
 .availability-row {
   display: block;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 20px;
   -webkit-transition: all 350ms ease;
   transition: all 350ms ease;
@@ -52,7 +52,7 @@ h1, h2, h3 {
 }
 
 
-#building-diagram {
+#table-diagram {
   height: 700px;
 }
 
