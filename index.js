@@ -16,19 +16,22 @@ $(document).ready(function () {
     //suites.style("visibility", "hidden");
     //1. Look throught the table and find the current list of columns and availabilities.
     var aTableContainer = d3.select("#availability-table-containter"); //Get the container for the table
+    console.log(aTableContainer);
     var aTableHeaders = aTableContainer.select(".atr-header").selectAll("div");//get the div that holds the column headers
     var aTableHeaderList = [];//make an array of the table headers.
+    console.log(aTableHeaderList);
     aTableHeaders.each(function(d,i){aTableHeaderList.push(this.innerHTML.toLowerCase());}); //push the column headers into it
     var aItems = aTableContainer.selectAll(".availability-item"); //get rows of the table
     //for each row in the teble
     aItems.each(function(d, i) {
         var item = d3.select(this);
+       
         var rowLink = item.select("a").attr("href") //the click link for the row
         const itemData = new Map();
         item.select(".availability-table-row").selectAll("div").each(function(d, i) {
             itemData.set(aTableHeaderList[i], this.innerHTML.toLowerCase());
         })
-
+        console.log(itemData);
         var suitePolygon = svg.select("#s-" + itemData.get("suite"));
         var floorPolygon = svg.select("#f-" + itemData.get("floor"));
 
