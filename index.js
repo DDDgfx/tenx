@@ -15,7 +15,7 @@ $(document).ready(function () {
 
     //suites.style("visibility", "hidden");
     //1. Look throught the table and find the current list of columns and availabilities.
-    var aTableContainer = d3.select("#availability-table-containter"); //Get the container for the table
+    var aTableContainer = d3.select("#availability-table-container");//Get the container for the table
     console.log(aTableContainer);
     var aTableHeaders = aTableContainer.select(".atr-header").selectAll("div");//get the div that holds the column headers
     var aTableHeaderList = [];//make an array of the table headers.
