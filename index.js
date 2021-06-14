@@ -40,14 +40,14 @@ $(document).ready(function () {
 
 
         suitePolygon.on("mouseover", function (event, d) {
-            d3.select(this).selectAll(".suite").style("fill-opacity", 1);
-            aItems.style("opacity", .3);
-            item.style("opacity", 1);
+            d3.select(this).selectAll(".suite").transition().style("fill-opacity", 1);
+            aItems.transition().style("opacity", .3);
+            item.transition().style("opacity", 1);
         })
     
         suites.on("mouseleave", function (event, d) {
-            d3.select(this).selectAll(".suite").style("fill-opacity", .25);
-            aItems.style("opacity", 1);
+            d3.select(this).selectAll(".suite").transition().style("fill-opacity", .25);
+            aItems.transition().style("opacity", 1);
         })
     
         suites.on("click", function (event, d) {
@@ -56,14 +56,14 @@ $(document).ready(function () {
 
 
         item.on("mouseover", function (event, d) {
-            aItems.style("opacity", .3);
-            d3.select(this).style("opacity", 1);
-            suitePolygon.selectAll(".suite").style("fill-opacity", 1);
+            aItems.transition().style("opacity", .3);
+            d3.select(this).transition().style("opacity", 1);
+            suitePolygon.selectAll(".suite").transition().style("fill-opacity", 1);
         })
     
         item.on("mouseleave", function (event, d) {
-            aItems.style("opacity", 1);
-            suitePolygon.selectAll(".suite").style("fill-opacity", .25);
+            aItems.transition().style("opacity", 1);
+            suitePolygon.selectAll(".suite").transition().style("fill-opacity", .25);
     
         })
     
