@@ -8,6 +8,13 @@ h1, h2, h3 {
     font-weight: 600;
 }
 
+
+#table-diagram {
+  height: 700px;
+  margin-top: 100px;
+}
+
+
 /*flex basics*/
 .flex-container {
   display: flex;
@@ -52,7 +59,64 @@ h1, h2, h3 {
 }
 
 
-#table-diagram {
-  height: 700px;
+.floor-plan-detail-list {
+  width: 500px;
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Alliance no', sans-serif;
+  color: #141414;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 400;
+  cursor: none;
+  box-sizing: border-box;
+  margin-top: 0px;
+  margin-bottom: 32px;
+  padding-top: 24px;
+  padding-left: 0px;
+  border-top: 1px solid rgba(42, 42, 49, 0.1);
+  list-style-type: none;
+
 }
+
+
+.underline-list-item {
+
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Alliance no', sans-serif;
+  color: #141414;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 400;
+  cursor: none;
+  list-style-type: none;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  -webkit-box-align: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(42, 42, 49, 0.1);
+  opacity: 1;
+}
+
+
+/*UMMMMMMM ACCORDION STUFF */
+
+
+
+.toggle-wrapper {
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Alliance no',sans-serif;
+  color: #141414;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 400;
+  cursor: none;
+  box-sizing: border-box;
+  grid-row-start: span 1;
+  grid-row-end: span 1;
+  grid-column-start: span 4;
+  grid-column-end: span 4;
+}
+
+
 
