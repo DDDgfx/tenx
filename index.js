@@ -75,19 +75,28 @@ $(document).ready(function () {
     })
 
     ////MAPBOX
-    //Find the list of amenties.
-    //Prepare json data for open GL.
-    //Finsih SVG icons.
-    //zoom to extent of filtered markers.
-    //Add hover and click behavior to reveal the markers.
-    //
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
+    //Create the map
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/cizzle/ckp5swexc0t0k17qcolpk960i',
+        center: [-74.033216, 40.716560], // starting position [lng, lat]
+        zoom: 14, // starting zoom
+        bearing: 0, //bearing
+        pitch: 0,
+        //interactive: false
+    });
+
+    //Keep the list of amenity categories.
+    var amenityCategories = ['Attractions','Fitness','Dining','Hotels','Retail','Services','Transit'];
+    var iconScale = d3.scaleOrdinal(['attractions_sm','fitness_sm','food_sm','hotels_sm','retail_sm','blank_sm','transit_sm']).domain(amenityCategories);
 
     var amenityCategoryHeaders = d3.selectAll(".amenity-header");
 
-    amenityCategoryHeaders.on("click", function (event, d) {
+
+
+    amenityCategoryHeaders.on("mouseenter", function (event, d) {
         var mapCat = d3.select(this).select("div:nth-child(2)").html();
-
-
 
 
         amenityCategories.forEach(function(d) {
@@ -99,14 +108,6 @@ $(document).ready(function () {
             }
 
         })
-
-
-
-        console.log(mapCat);
-
-        // var features = map.querySourceFeatures('amenityPoints', {
-        //     sourceLayer: mapCat // replace with your layer name
-        // });
 
         var features = amenityData.features.filter(d => d.properties.Category == mapCat);
 
@@ -122,54 +123,8 @@ $(document).ready(function () {
 
     })
 
-    var amenityCategoryContainer = d3.select("#amenity-table-container");
 
-    var amenityCategories = ['Attractions','Fitness','Dining','Hotels','Retail','Services','Transit'];
-
-    var iconScale = d3.scaleOrdinal(['attractions_sm','fitness_sm','food_sm','hotels_sm','retail_sm','blank_sm','transit_sm']).domain(amenityCategories);
-
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
-
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/cizzle/ckp5swexc0t0k17qcolpk960i',
-        center: [-74.033216, 40.716560], // starting position [lng, lat]
-        zoom: 14, // starting zoom
-        bearing: 0, //bearing
-        pitch: 0,
-        //interactive: false
-    });
-
-    //add a map on click function.
-    map.on('click', function (e) {
-        // If the user clicked on one of your markers, get its information.
-        var features = map.queryRenderedFeatures(e.point, {
-            layers: amenityCategories // replace with your layer name
-        });
-        if (!features.length) {
-            return;
-        }
-        var feature = features[0];
-
-        console.log(feature);
-
-        // Code from the next step will go here.
-
-        var popup = new mapboxgl.Popup({
-                offset: [0, -5]
-            })
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(
-                '<h4>' + feature.properties.Name + '</h4>' +
-                '<p>' + feature.properties.Category+ '</p>'
-            )
-            .addTo(map);
-
-
-    });
-
-    //add a symbol layer from data.
+    //Map init
     map.on('load', function () {
 
 
@@ -179,24 +134,6 @@ $(document).ready(function () {
             'data' : amenityData
 
         });
-
-        // // Add a symbol layer
-        // map.addLayer({
-        //     'id': 'amenities',
-        //     'type': 'symbol',
-        //     'source': 'amenityPoints',
-        //     'layout': {
-        //         'icon-image': 'dot_sm',
-        //         // get the title name from the source's "title" property
-        //         // 'text-field': ['get', 'Name'],
-        //         // 'text-font': [
-        //         //     'Open Sans Semibold',
-        //         //     'Arial Unicode MS Bold'
-        //         // ],
-        //         // 'text-offset': [0, 1.25],
-        //         // 'text-anchor': 'top'
-        //     }
-        // });
 
 
         amenityData.features.forEach(function (feature) {
@@ -237,11 +174,35 @@ $(document).ready(function () {
 
 
 
+    //add a map on click function.
+    map.on('click', function (e) {
+        // If the user clicked on one of your markers, get its information.
+        var features = map.queryRenderedFeatures(e.point, {
+            layers: amenityCategories // replace with your layer name
+        });
+        if (!features.length) {
+            return;
+        }
+        var feature = features[0];
+
+        console.log(feature);
+
+        // Code from the next step will go here.
+
+        var popup = new mapboxgl.Popup({
+                offset: [0, -5]
+            })
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(
+                '<h4>' + feature.properties.Name + '</h4>' +
+                '<p>' + feature.properties.Category+ '</p>'
+            )
+            .addTo(map);
 
 
+    });
 
-
-
+    //add a symbol layer from data.
 
         //BASIC MARKER METHOD
         // amenityData.features.forEach(function(marker) {
@@ -277,6 +238,27 @@ $(document).ready(function () {
 
 
 //DATA & ICONS
+
+
+var tenExchangeFeature = {
+    "type": "FeatureCollection",
+    "features": [
+   {
+     "type": "Feature",
+     "geometry": {
+        "type": "Point",
+        "coordinates":  { }
+     },
+     "properties": {
+     "Name":"10 Exchange Place",
+     "Category":"Primary",
+     "Address":"10 Exchange Pl, Jersey City, NJ 07302",
+     "Google Business URL":"",
+     "Latitude":40.7166772
+     }
+   }
+ ]
+ }
 
 
 var amenityData = {
