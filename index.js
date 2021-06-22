@@ -82,7 +82,45 @@ $(document).ready(function () {
     //Add hover and click behavior to reveal the markers.
     //
 
+    var amenityCategoryHeaders = d3.selectAll(".amenity-header");
 
+    amenityCategoryHeaders.on("click", function (event, d) {
+        var mapCat = d3.select(this).select("div:nth-child(2)").html();
+
+
+
+
+        amenityCategories.forEach(function(d) {
+
+            if (d == mapCat) {
+                map.setLayoutProperty(d, 'visibility',  'visible');
+            } else {
+                map.setLayoutProperty(d, 'visibility',  'none');
+            }
+
+        })
+
+
+
+        console.log(mapCat);
+
+        // var features = map.querySourceFeatures('amenityPoints', {
+        //     sourceLayer: mapCat // replace with your layer name
+        // });
+
+        var features = amenityData.features.filter(d => d.properties.Category == mapCat);
+
+        var bounds = new mapboxgl.LngLatBounds();
+
+        features.forEach(function(feature) {
+            bounds.extend(feature.geometry.coordinates);
+        });
+
+        map.fitBounds(bounds, {
+            padding: 50
+        });
+
+    })
 
     var amenityCategoryContainer = d3.select("#amenity-table-container");
 
@@ -107,7 +145,7 @@ $(document).ready(function () {
     map.on('click', function (e) {
         // If the user clicked on one of your markers, get its information.
         var features = map.queryRenderedFeatures(e.point, {
-            layers: ['10-exchange-ammenities'] // replace with your layer name
+            layers: amenityCategories // replace with your layer name
         });
         if (!features.length) {
             return;
@@ -124,7 +162,7 @@ $(document).ready(function () {
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
                 '<h4>' + feature.properties.Name + '</h4>' +
-                '<p>' + feature.properties.description + '</p>'
+                '<p>' + feature.properties.Category+ '</p>'
             )
             .addTo(map);
 
@@ -164,7 +202,7 @@ $(document).ready(function () {
         amenityData.features.forEach(function (feature) {
 
             var category = feature.properties['Category'];
-            var layerID = 'poi-' + category;
+            var layerID = category;
 
 
             console.log(iconScale(category));

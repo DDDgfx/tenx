@@ -119,4 +119,74 @@ h1, h2, h3 {
 }
 
 
+.w-dropdown {
 
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Alliance no',sans-serif;
+  color: #141414;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 400;
+  cursor: none;
+  box-sizing: border-box;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 900;
+  position: relative;
+  display: block;
+  border-style: none none solid;
+  border-width: 1px;
+  border-color: #e3e3e3 #e3e3e3 rgba(42,42,49,.1);
+  transition: border-color .5s;
+}
+
+.w-dropdown-toggle {
+
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Alliance no',sans-serif;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 400;
+  box-sizing: border-box;
+  vertical-align: top;
+  text-decoration: none;
+  color: #222;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  display: block;
+  padding: 20px 120px 20px 0;
+  cursor: pointer;
+}
+
+.w-icon-dropdown-toggle {
+
+  -webkit-text-size-adjust: 100%;
+  font-size: 15px;
+  color: #222;
+  text-align: left;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: webflow-icons!important;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto 20px auto auto;
+  width: 1em;
+  height: 1em;
+  margin-right: 0;
+}
