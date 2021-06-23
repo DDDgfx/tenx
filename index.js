@@ -81,16 +81,16 @@ $(document).ready(function () {
         container: 'map',
         style: 'mapbox://styles/cizzle/ckp5swexc0t0k17qcolpk960i',
         center: [-74.033216, 40.716560], // starting position [lng, lat]
-        zoom: 14, // starting zoom
-        bearing: 0, //bearing
-        pitch: 0,
+        zoom: 16, // starting zoom
+        bearing: -37, //bearing
+        pitch: 50,
         //interactive: false
     });
 
     //Keep the list of amenity categories.
     var amenityCategories = ['Attractions', 'Fitness', 'Dining', 'Hotels', 'Retail', 'Services', 'Transit'];
     var currentCategory;
-    var iconScale = d3.scaleOrdinal(['attractions_sm', 'fitness_sm', 'food_sm', 'hotels_sm', 'retail_sm', 'blank_sm', 'transit_sm']).domain(amenityCategories);
+    var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
 
 
 
@@ -117,7 +117,8 @@ $(document).ready(function () {
             'type': 'symbol',
             'source': 'tenExchange',
             'layout': {
-                'icon-image': 'blank_sm',
+                'icon-image': 'tenx',
+                'icon-anchor': 'bottom',
                 'icon-allow-overlap': true
             }
         });
@@ -143,6 +144,8 @@ $(document).ready(function () {
                         // To add a new image to the style at runtime see
                         // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
                         'icon-image': iconScale(category),
+                        'icon-anchor': 'bottom',
+                        'icon-size': .25,
                         'icon-allow-overlap': true
                     },
                     'filter': ['==', 'Category', category]
@@ -157,7 +160,7 @@ $(document).ready(function () {
 
     });
 
-    //add a map on click function.
+    //MAP CLICK
     map.on('click', function (e) {
         // If the user clicked on one of your markers, get its information.
         var features = map.queryRenderedFeatures(e.point, {
@@ -176,8 +179,7 @@ $(document).ready(function () {
             })
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
-                '<h4>' + feature.properties.Name + '</h4>' +
-                '<p>' + feature.properties.Category + '</p>'
+                '<p>' + feature.properties.Name + '</p>'
             )
             .addTo(map);
 
@@ -185,8 +187,7 @@ $(document).ready(function () {
     });
 
 
-
-
+    //LIST UX BEHAVIOR
     var amenityCategoryHeaders = d3.selectAll(".amenity-header");
     var amenityListItems = d3.selectAll(".amenity-item");
     var currentPopup = new mapboxgl.Popup({
@@ -196,8 +197,9 @@ $(document).ready(function () {
         .setHTML(
             '<h4>POPUP</h4>'
         );
-
-    amenityListItems.on("mouseenter", function (event, d) {
+    
+    
+    amenityListItems.on("click", function (event, d) {
         var featureName = d3.select(this).select('div').select('div').html();
         featureName = featureName.replace('&amp;', '&');
         var featureJSON = amenityData.features.find(d => d.properties.Name == featureName);
@@ -222,8 +224,7 @@ $(document).ready(function () {
             })
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
-                '<h4>' + feature.properties.Name + '</h4>' +
-                '<p>' + feature.properties.Category + '</p>'
+                '<div>' + feature.properties.Name + '</div>'
             )
             .addTo(map);
 
@@ -232,7 +233,7 @@ $(document).ready(function () {
 
     })
 
-    amenityCategoryHeaders.on("mouseenter", function (event, d) {
+    amenityCategoryHeaders.on("click", function (event, d) {
         var mapCat = d3.select(this).select("div:nth-child(2)").html();
         currentCategory = mapCat;
 
@@ -259,6 +260,11 @@ $(document).ready(function () {
             padding: 50
         });
 
+        // map.flyTo({
+        //     pitch: 0,
+        //     bearing: 0
+        // })
+
     })
 
 
@@ -280,7 +286,7 @@ var tenExchangeFeature = {
         "type": "Feature",
         "geometry": {
             "type": "Point",
-            "coordinates": {}
+            "coordinates": [-74.03331426860343, 40.71669039505952]
         },
         "properties": {
             "Name": "10 Exchange Place",
