@@ -67,7 +67,7 @@ h1, h2, h3 {
   font-size: 15px;
   line-height: 25px;
   font-weight: 400;
-  cursor: none;
+  cursor: pointer;
   box-sizing: border-box;
   margin-top: 0px;
   margin-bottom: 32px;
@@ -87,7 +87,7 @@ h1, h2, h3 {
   font-size: 15px;
   line-height: 25px;
   font-weight: 400;
-  cursor: none;
+  cursor: pointer;
   list-style-type: none;
   box-sizing: border-box;
   margin-bottom: 24px;
@@ -110,7 +110,7 @@ h1, h2, h3 {
   font-size: 15px;
   line-height: 25px;
   font-weight: 400;
-  cursor: none;
+  cursor: pointer;
   box-sizing: border-box;
   grid-row-start: span 1;
   grid-row-end: span 1;
@@ -127,7 +127,7 @@ h1, h2, h3 {
   font-size: 15px;
   line-height: 25px;
   font-weight: 400;
-  cursor: none;
+  cursor: pointer;
   box-sizing: border-box;
   text-align: left;
   margin-left: auto;
