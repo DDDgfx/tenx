@@ -91,6 +91,44 @@ $(document).ready(function () {
     var amenityCategories = ['Attractions', 'Fitness', 'Food and Drink', 'Hotels', 'Retail', 'Services', 'Transit'];
     var currentCategory;
     var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
+    var catAngles = {
+        'Attractions': {
+            padding: 50,
+            pitch: 50,
+            bearing: -50
+        },
+        'Fitness' : {
+            padding: 50,
+            pitch: 60,
+            bearing: 9
+        }, 
+        'Food and Drink' : {
+            padding: 50,
+            pitch: 50,
+            bearing: -50
+        },
+        'Hotels' : {
+            padding: 25,
+            pitch: 70,
+            bearing: 123
+        },
+        'Retail' : {
+            padding: 25,
+            pitch: 50,
+            bearing: -50
+        },
+        'Services' : {
+            padding: 50,
+            pitch: 50,
+            bearing: -50
+        }, 
+        'Transit' : {
+            padding: 50,
+            pitch: 0,
+            bearing: 0
+        }
+
+    }
 
 
 
@@ -119,6 +157,7 @@ $(document).ready(function () {
             'layout': {
                 'icon-image': 'tenx',
                 'icon-anchor': 'bottom',
+                'icon-size': .5,
                 'icon-allow-overlap': true
             }
         });
@@ -173,11 +212,14 @@ $(document).ready(function () {
 
 
 
+        var description = feature.properties.Category;
 
+        console.log(feature.properties.Name);
 
         var params = {
             'query': feature.properties.Name,
             'limit': 10,
+            // 'types': 'LocalBusiness',
             'indent': true,
             'key' : 'AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo',
           };
@@ -185,19 +227,17 @@ $(document).ready(function () {
       
           $.getJSON(service_url + '?callback=?', params, function(response) {
               console.log(response);
+              description = response.itemListElement[0]['description'];
             $.each(response.itemListElement, function(i, element) {
       
               // $('<div>', {text:element['result']['name']}).appendTo(document.body);
       
-              console.log(element);
+              //console.log(element);
       
             });
           });
 
-
-
-
-
+          
 
         var popUps = document.getElementsByClassName('mapboxgl-popup');
         /** Check if there is already a popup on the map and if so, remove it */
@@ -209,7 +249,7 @@ $(document).ready(function () {
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
                 '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">' + feature.properties.Name + '</a></h3>' +
-                '<h4>' + feature.properties.Category + '</h4>'
+                '<h4>' + description + '</h4>'
             )
             .addTo(map);
     }
@@ -217,10 +257,10 @@ $(document).ready(function () {
 
 
     //MAP CLICK
-    map.on('click', function (e) {
+    map.on('mousemove', function (e) {
         // If the user clicked on one of your markers, get its information.
         var features = map.queryRenderedFeatures(e.point, {
-            layers: amenityCategories.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
+            layers: amenityCategories //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
         });
 
         if (!features.length) {
@@ -278,7 +318,9 @@ $(document).ready(function () {
         });
 
         map.fitBounds(bounds, {
-            padding: 50
+            padding: catAngles[mapCat]["padding"],
+            pitch: catAngles[mapCat]["pitch"],
+            bearing: catAngles[mapCat]["bearing"]
         });
 
         // map.flyTo({
