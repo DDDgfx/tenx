@@ -163,7 +163,42 @@ $(document).ready(function () {
         });
     }
 
+
+    var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+
+
+
     function createPopUp(feature) {
+
+
+
+
+
+
+        var params = {
+            'query': feature.properties.Name,
+            'limit': 10,
+            'indent': true,
+            'key' : 'AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo',
+          };
+      
+      
+          $.getJSON(service_url + '?callback=?', params, function(response) {
+              console.log(response);
+            $.each(response.itemListElement, function(i, element) {
+      
+              // $('<div>', {text:element['result']['name']}).appendTo(document.body);
+      
+              console.log(element);
+      
+            });
+          });
+
+
+
+
+
+
         var popUps = document.getElementsByClassName('mapboxgl-popup');
         /** Check if there is already a popup on the map and if so, remove it */
         if (popUps[0]) popUps[0].remove();
@@ -173,7 +208,7 @@ $(document).ready(function () {
             })
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
-                '<h3>' + feature.properties.Name + '</h3>' +
+                '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">' + feature.properties.Name + '</a></h3>' +
                 '<h4>' + feature.properties.Category + '</h4>'
             )
             .addTo(map);
@@ -257,6 +292,15 @@ $(document).ready(function () {
 
 
     ////END
+
+
+    //google API key
+    //    AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo
+
+
+
+
+
 
 });
 
