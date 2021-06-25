@@ -63,25 +63,48 @@
             stroke-width: 1px;
         }
 
-        .popup {
+        /* Marker tweaks */
+        .mapboxgl-popup-close-button {
+            display: none;
+        }
 
+        .mapboxgl-popup-content {
+            /* font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif; */
+            padding: 0;
+            width: 180px;
             -webkit-text-size-adjust: 100%;
             font-family: 'Alliance no', sans-serif;
             color: #141414;
             font-size: 15px;
             line-height: 25px;
             font-weight: 400;
-            cursor: pointer;
-            list-style-type: none;
+            /* cursor: none; */
+            text-align: left;
             box-sizing: border-box;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            -webkit-box-align: center;
-            align-items: center;
-            border-bottom: 1px solid rgba(42, 42, 49, 0.1);
-            opacity: 1;
+            border-radius: 5px;
         }
-        
+
+        .mapboxgl-popup-content-wrapper {
+            padding: 1%;
+        }
+
+        .mapboxgl-popup-content h3 {
+            background: #00d8e2;
+            color: #fff;
+            margin-top: 20;
+            display: block;
+            padding: 10px;
+            border-radius: 3px 3px 0 0;
+            font-weight: 700;
+            margin-top: -15px;
+        }
+
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            display: block;
+            padding: 0px 10px 10px 10px;
+            font-weight: 400;
+        }
     </style>
 
 </head>
@@ -386,7 +409,7 @@
                         aria-controls="w-dropdown-list-2" aria-haspopup="menu" aria-expanded="false" role="button"
                         tabindex="0">
                         <div class="amenity-icon w-icon-dropdown-toggle" aria-hidden="true"></div>
-                        <div>Dining</div>
+                        <div>Food and Drink</div>
                     </div>
                     <!-- <nav class="amenity-pane w-dropdown-list" style="width: 431px; height: 0px;" id="w-dropdown-list-2"
                         aria-labelledby="w-dropdown-toggle-2">

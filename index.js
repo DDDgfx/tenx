@@ -88,7 +88,7 @@ $(document).ready(function () {
     });
 
     //Keep the list of amenity categories.
-    var amenityCategories = ['Attractions', 'Fitness', 'Dining', 'Hotels', 'Retail', 'Services', 'Transit'];
+    var amenityCategories = ['Attractions', 'Fitness', 'Food and Drink', 'Hotels', 'Retail', 'Services', 'Transit'];
     var currentCategory;
     var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
 
@@ -138,11 +138,6 @@ $(document).ready(function () {
                     'type': 'symbol',
                     'source': 'amenityPoints',
                     'layout': {
-                        // These icons are a part of the Mapbox Light style.
-                        // To view all images available in a Mapbox style, open
-                        // the style in Mapbox Studio and click the "Images" tab.
-                        // To add a new image to the style at runtime see
-                        // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
                         'icon-image': iconScale(category),
                         'icon-anchor': 'bottom',
                         'icon-size': .25,
@@ -160,6 +155,32 @@ $(document).ready(function () {
 
     });
 
+    //Popup and flyto
+    function flyToStore(currentFeature) {
+        map.flyTo({
+            center: currentFeature.geometry.coordinates,
+            zoom: 15
+        });
+    }
+
+    function createPopUp(feature) {
+        var popUps = document.getElementsByClassName('mapboxgl-popup');
+        /** Check if there is already a popup on the map and if so, remove it */
+        if (popUps[0]) popUps[0].remove();
+
+        var popup = new mapboxgl.Popup({
+                offset: [0, -25]
+            })
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(
+                '<h3>' + feature.properties.Name + '</h3>' +
+                '<h4>' + feature.properties.Category + '</h4>'
+            )
+            .addTo(map);
+    }
+
+
+
     //MAP CLICK
     map.on('click', function (e) {
         // If the user clicked on one of your markers, get its information.
@@ -171,18 +192,7 @@ $(document).ready(function () {
             return;
         }
         var feature = features[0];
-
-        console.log(feature);
-
-        var popup = new mapboxgl.Popup({
-                offset: [0, -5]
-            })
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(
-                '<p>' + feature.properties.Name + '</p>'
-            )
-            .addTo(map);
-
+        createPopUp(feature);
 
     });
 
@@ -190,15 +200,7 @@ $(document).ready(function () {
     //LIST UX BEHAVIOR
     var amenityCategoryHeaders = d3.selectAll(".amenity-header");
     var amenityListItems = d3.selectAll(".amenity-item");
-    var currentPopup = new mapboxgl.Popup({
-            offset: [0, -5]
-        })
-        .setLngLat([0, 0])
-        .setHTML(
-            '<h4>POPUP</h4>'
-        );
-    
-    
+
     amenityListItems.on("click", function (event, d) {
         var featureName = d3.select(this).select('div').select('div').html();
         featureName = featureName.replace('&amp;', '&');
@@ -215,21 +217,7 @@ $(document).ready(function () {
         }
         var feature = mapFeature[0];
 
-        console.log(feature);
-
-        currentPopup.remove();
-
-        var popup = new mapboxgl.Popup({
-                offset: [0, -5]
-            })
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(
-                '<div>' + feature.properties.Name + '</div>'
-            )
-            .addTo(map);
-
-        currentPopup = popup
-
+        createPopUp(feature)
 
     })
 
@@ -237,9 +225,7 @@ $(document).ready(function () {
         var mapCat = d3.select(this).select("div:nth-child(2)").html();
         currentCategory = mapCat;
 
-
         amenityCategories.forEach(function (d) {
-
             if (d == mapCat) {
                 map.setLayoutProperty(d, 'visibility', 'visible');
             } else {
@@ -1483,7 +1469,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-52",
                 "Name": "Vu",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "2 Exchange Pl, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/uJPPUJ1Y1VNV3gCr6",
                 "Number": 2,
@@ -1506,7 +1492,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-53",
                 "Name": "Au Bon Pain",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "101 Hudson St #1, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/FaGuVy56xLrXFE6d9",
                 "Number": 101,
@@ -1529,7 +1515,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-54",
                 "Name": "Lokal Eatery & Bar",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "2 2nd St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/lokal-eatery-bar?share",
                 "Number": 2,
@@ -1552,7 +1538,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-55",
                 "Name": "DomoDomo",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "200 Greene St, Jersey City, NJ 07311, United States",
                 "Google Business URL": "https://g.page/domodomo-jersey-city?share",
                 "Number": 200,
@@ -1575,7 +1561,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-56",
                 "Name": "Gregory's Coffee",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "10 Exchange Pl, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/UzEXhE8NjL67m2su9",
                 "Number": 10,
@@ -1598,7 +1584,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-57",
                 "Name": "Exchange Place Market",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "10 Exchange Pl, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/K71kicYXGhjRFxhM7",
                 "Number": 10,
@@ -1621,7 +1607,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-58",
                 "Name": "Starbucks",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "111 Town Square Pl, Jersey City, NJ 07310, United States",
                 "Google Business URL": "https://goo.gl/maps/MtNjr1Vo1uUM5WjC9",
                 "Number": 111,
@@ -1644,7 +1630,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-59",
                 "Name": "Rooftop at Exchange Place",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "1 Exchange Pl, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/rooftopxp?share",
                 "Number": 1,
@@ -1667,7 +1653,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-60",
                 "Name": "Potbelly",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "15 Exchange Pl #100, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/Tx1ToMx2uvEG1nw48",
                 "Number": 15,
@@ -1690,7 +1676,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-61",
                 "Name": "Ample Hills Creamery",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "200 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/249iGMXJstUcd7Sg7",
                 "Number": 200,
@@ -1713,7 +1699,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-62",
                 "Name": "9 Bar Cafe at Urby",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "200 Greene St, Jersey City, NJ 07311, United States",
                 "Google Business URL": "https://goo.gl/maps/xG3MkPkPe2wMufFJ6",
                 "Number": 200,
@@ -1736,7 +1722,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-63",
                 "Name": "Maggie's Farm Espresso",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "88 Morgan St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/QeKvBnJtC8TSikJ77",
                 "Number": 88,
@@ -1759,7 +1745,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-64",
                 "Name": "Hudson's Grill",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "160 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/sp5YA5M19okMwYmU8",
                 "Number": 160,
@@ -1782,7 +1768,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-65",
                 "Name": "Amiya",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "101 Hudson St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/V553q3dz46aVKe4ZA",
                 "Number": 101,
@@ -1805,7 +1791,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-66",
                 "Name": "Porto Leggero",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "185 Hudson St, Jersey City, NJ 07311, United States",
                 "Google Business URL": "https://goo.gl/maps/wdttkZ1aBwSooXLX9",
                 "Number": 185,
@@ -1828,7 +1814,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-67",
                 "Name": "Cava",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "30 Montgomery St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/AjE7SoVFR4ft1HX79",
                 "Number": 30,
@@ -1851,7 +1837,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-68",
                 "Name": "City Diner",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "31 Montgomery St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/HULpw5F3nZEYDsVb9",
                 "Number": 31,
@@ -1874,7 +1860,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-69",
                 "Name": "Five Guys",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "101 Hudson St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/cPZ73ahw5X2WQmMo9",
                 "Number": 101,
@@ -1897,7 +1883,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-70",
                 "Name": "Iron Monkey",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "99 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/nq3arHSjMX34cLKP9",
                 "Number": 99,
@@ -1920,7 +1906,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-71",
                 "Name": "Honshu Sushi",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "95 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/Honshujc?share",
                 "Number": 95,
@@ -1943,7 +1929,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-72",
                 "Name": "Greene Hook Bar & Kitchen",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "70 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/8KmU8n55qVR6RrJa9",
                 "Number": 70,
@@ -1966,7 +1952,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-73",
                 "Name": "Rumi Turkish Grill",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "67 Greene St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/TuE28KwvhWcjVC6MA",
                 "Number": 67,
@@ -1989,7 +1975,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-74",
                 "Name": "Sky Thai",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "62 Morris St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/yidxqRx8dVC5qiN57",
                 "Number": 62,
@@ -2012,7 +1998,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-75",
                 "Name": "John's Pizzeria",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "87 Sussex St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/cAJLERScrCfvpiLJ7",
                 "Number": 87,
@@ -2035,7 +2021,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-76",
                 "Name": "Krispy Pizza",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "33 Hudson St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/Q9S3zuuf9KGVRnrF7",
                 "Number": 33,
@@ -2058,7 +2044,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-77",
                 "Name": "Cosi",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "535 Washington Blvd, Jersey City, NJ 07310, United States",
                 "Google Business URL": "https://goo.gl/maps/ioPmcgN4NL9SdQ2H7",
                 "Number": 535,
@@ -2081,7 +2067,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-78",
                 "Name": "Satis Bistro",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "212 Washington St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/satisbistro?share",
                 "Number": 212,
@@ -2104,7 +2090,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-79",
                 "Name": "Bistro La Source",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "85 Morris St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/Bistro-La-Source-173898632667883?share",
                 "Number": 85,
@@ -2127,7 +2113,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-80",
                 "Name": "Light Horse Tavern",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "199 Washington St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/Jhr1p3ghKfEQxTM39",
                 "Number": 199,
@@ -2150,7 +2136,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-81",
                 "Name": "Sam A.M.",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "112 Morris St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/mvs6YQYMYq5xbMSs8",
                 "Number": 112,
@@ -2173,7 +2159,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-82",
                 "Name": "Tino's Artisinal Pizza Co",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "199 Warren St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/tino-s-artisan-pizza-co-?share",
                 "Number": 199,
@@ -2196,7 +2182,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-83",
                 "Name": "Amelia's Bistro",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "187 Warren St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/ameliasbistrojc?share",
                 "Number": 187,
@@ -2219,7 +2205,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-84",
                 "Name": "White Star",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "179 Warren St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/uY2GsBxe7c716atD6",
                 "Number": 179,
@@ -2242,7 +2228,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-85",
                 "Name": "Taqueria Viva Mexico Kitchen Café",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "133 Morris St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/qw1CwLZtF1rD8mTe7",
                 "Number": 133,
@@ -2265,7 +2251,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-86",
                 "Name": "Lisbon Pizzeria Las Americas",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "260 Warren St #3713, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/QGz9dAVDbTxieKrt6",
                 "Number": 260,
@@ -2288,7 +2274,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-87",
                 "Name": "Taste of North China",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "75 Montgomery St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/9oVfv1oeq8GQVYgK8",
                 "Number": 75,
@@ -2311,7 +2297,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-88",
                 "Name": "Mantra Authentic Indian",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "253 Washington St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/mantrajc?share",
                 "Number": 253,
@@ -2334,7 +2320,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-89",
                 "Name": "Buddy Who's",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "247 Washington St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/X9w3fdsXGQz4E5br8",
                 "Number": 247,
@@ -2357,7 +2343,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-90",
                 "Name": "Lackawanna Coffee",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "295 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/sKmPxR3YHkVSeFd88",
                 "Number": 295,
@@ -2380,7 +2366,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-91",
                 "Name": "O'Hara's Downtown",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "172 1st St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/oharasjc?share",
                 "Number": 172,
@@ -2403,7 +2389,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-92",
                 "Name": "Hudson Hall",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "364 Marin Blvd, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/hudsonhalljc?share",
                 "Number": 364,
@@ -2426,7 +2412,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-93",
                 "Name": "Departed Soles",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "150 Bay St #2a, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/PwQjDkqcZ1giLjcv6",
                 "Number": 150,
@@ -2449,7 +2435,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-94",
                 "Name": "Bucket & Bay Craft Gelato Co",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "150 Bay St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/YkxzGnHT1RVAbLxx5",
                 "Number": 150,
@@ -2472,7 +2458,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-95",
                 "Name": "dullboy",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "364 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/hQkSREAzQMxChmCs9",
                 "Number": 364,
@@ -2495,7 +2481,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-96",
                 "Name": "Taqueria Downtown",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "236 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/dyV4gYhz1gqXAWu56",
                 "Number": 236,
@@ -2518,7 +2504,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-97",
                 "Name": "Mathews Food and Drink",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "351 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/mathewsfoodanddrink?share",
                 "Number": 351,
@@ -2541,7 +2527,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-98",
                 "Name": "Orale Mexican Kitchen",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "341 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/OraleMK-JC?share",
                 "Number": 341,
@@ -2564,7 +2550,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-99",
                 "Name": "Porta",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "135 Newark Ave, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/PortaJerseyCity?share",
                 "Number": 135,
@@ -2587,7 +2573,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-100",
                 "Name": "Beechwood Café",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "290 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/531UDQ8PUYk4JzbH7",
                 "Number": 290,
@@ -2610,7 +2596,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-101",
                 "Name": "Luna",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "279 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/lunajerseycity?share",
                 "Number": 279,
@@ -2633,7 +2619,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-102",
                 "Name": "Razza",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "275 Grove St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/LbVdsCfaEaNu5W7b6",
                 "Number": 275,
@@ -2656,7 +2642,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-103",
                 "Name": "Short Grain",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "183 Montgomery St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/doBuuGuQZhEKjEKV9",
                 "Number": 183,
@@ -2679,7 +2665,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-104",
                 "Name": "Edward's Steakhouse",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "239 Marin Blvd, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/qAnQGAZat9Gh5r1t8",
                 "Number": 201,
@@ -2702,7 +2688,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-105",
                 "Name": "The Hamilton Inn",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "708 Jersey Ave, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/afmGfYwP9WGD2bzp6",
                 "Number": 708,
@@ -2725,7 +2711,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-106",
                 "Name": "Rumba Cubana",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "235 Pavonia Ave, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/rumba-cubana-jersey-city?share",
                 "Number": 235,
@@ -2748,7 +2734,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-107",
                 "Name": "Ahri's Kitchen",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "227 7th St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/qPiqauLUqEtEt2rH6",
                 "Number": 227,
@@ -2771,7 +2757,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-108",
                 "Name": "Hamilton Pork",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "247 10th St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/9NFMyqDBUCpkwPEx7",
                 "Number": 247,
@@ -2794,7 +2780,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-109",
                 "Name": "Ed & Mary's",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "174 Coles St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/ednmarys?share",
                 "Number": 174,
@@ -2817,7 +2803,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-110",
                 "Name": "Rustique Pizza",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "611 Jersey Ave, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/RustiquePizza?share",
                 "Number": 611,
@@ -2840,7 +2826,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-111",
                 "Name": "White Star Bar",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "230 Brunswick St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/gBZybJNJAzejexm86",
                 "Number": 230,
@@ -2863,7 +2849,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-112",
                 "Name": "New Thanh Hoai",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "234 10th St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/zsRktsgYF882p23A8",
                 "Number": 234,
@@ -2886,7 +2872,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-113",
                 "Name": "Delenio",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "357 7th St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/KCsfRmHXaTLrYo6j8",
                 "Number": 357,
@@ -2909,7 +2895,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-114",
                 "Name": "White Star Warren Street",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "179 Warren St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/uY2GsBxe7c716atD6",
                 "Number": 179,
@@ -2932,7 +2918,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-115",
                 "Name": "Bluestone Lane",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "30 Hudson St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/LqsNSLCHKM6fKnaL6",
                 "Number": 30,
@@ -2955,7 +2941,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-116",
                 "Name": "Milk Sugar Love",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "19 McWilliams Pl, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/7Ywoo5r4biMR1sEH6",
                 "Number": 19,
@@ -2978,7 +2964,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-117",
                 "Name": "Cafe Esme",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "485 Marin Blvd, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://g.page/cafeesme?share",
                 "Number": 465,
@@ -3001,7 +2987,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-118",
                 "Name": "Zeppelin Hall Beer Garden",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "88 Liberty View Dr., Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/v7TTeL7JfqibaALt9",
                 "Number": 88,
@@ -3024,7 +3010,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-119",
                 "Name": "Surf City",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "1 Marin Blvd, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/gHc1SuW3gKDjtouk8",
                 "Number": 1,
@@ -3047,7 +3033,7 @@ var amenityData = {
             "properties": {
                 "id": "amenity-120",
                 "Name": "Smorgasborg",
-                "Category": "Dining",
+                "Category": "Food and Drink",
                 "Address": "44 Bay St, Jersey City, NJ 07302, United States",
                 "Google Business URL": "https://goo.gl/maps/s4zkFvJyB1tv9jet7",
                 "Number": 44,
@@ -3636,29 +3622,29 @@ var amenityData = {
                 "Country": "US"
             }
         },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-73.977412, 40.75236]
-            },
-            "properties": {
-                "id": "amenity-146",
-                "Name": "Tia's Place",
-                "Category": "Retail",
-                "Address": "89 E 42nd St, New York, NY 10017, United States",
-                "Google Business URL": "89 E 42nd St, New York, NY 10017, United States",
-                "Number": 89,
-                "Street": "E 42nd St",
-                "Unit Type": "",
-                "Unit Number": null,
-                "City": "New York",
-                "State": "NY",
-                "County": "New York County",
-                "Zip": 10017,
-                "Country": "US"
-            }
-        },
+        // {
+        //     "type": "Feature",
+        //     "geometry": {
+        //         "type": "Point",
+        //         "coordinates": [-73.977412, 40.75236]
+        //     },
+        //     "properties": {
+        //         "id": "amenity-146",
+        //         "Name": "Tia's Place",
+        //         "Category": "Retail",
+        //         "Address": "89 E 42nd St, New York, NY 10017, United States",
+        //         "Google Business URL": "89 E 42nd St, New York, NY 10017, United States",
+        //         "Number": 89,
+        //         "Street": "E 42nd St",
+        //         "Unit Type": "",
+        //         "Unit Number": null,
+        //         "City": "New York",
+        //         "State": "NY",
+        //         "County": "New York County",
+        //         "Zip": 10017,
+        //         "Country": "US"
+        //     }
+        // },
         {
             "type": "Feature",
             "geometry": {
