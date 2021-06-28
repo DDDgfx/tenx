@@ -90,7 +90,11 @@ $(document).ready(function () {
     //Keep the list of amenity categories.
     var amenityCategories = ['Attractions', 'Fitness', 'Food and Drink', 'Hotels', 'Retail', 'Services', 'Transit'];
     var currentCategory;
-    var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
+
+    //var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
+    var iconScale = d3.scaleOrdinal(['halodot_g']).domain(amenityCategories);
+
+    
     var catAngles = {
         'Attractions': {
             padding: 50,
@@ -155,7 +159,7 @@ $(document).ready(function () {
             'type': 'symbol',
             'source': 'tenExchange',
             'layout': {
-                'icon-image': 'tenx',
+                'icon-image': 'teardrop_g',
                 'icon-anchor': 'bottom',
                 'icon-size': .5,
                 'icon-allow-overlap': true
@@ -220,6 +224,7 @@ $(document).ready(function () {
             'query': feature.properties.Name,
             'limit': 10,
             // 'types': 'LocalBusiness',
+            // 'ids': 'LocalBusiness',
             'indent': true,
             'key' : 'AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo',
           };
