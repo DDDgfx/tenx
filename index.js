@@ -79,11 +79,11 @@ $(document).ready(function () {
     //Create the map
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/cizzle/ckp5swexc0t0k17qcolpk960i',
+        style: 'mapbox://styles/cizzle/ckqi5oie60jyd17s4xujbxpch',
         center: [-74.033216, 40.716560], // starting position [lng, lat]
-        zoom: 16, // starting zoom
-        bearing: -37, //bearing
-        pitch: 50,
+        zoom: 14, // starting zoom
+        bearing: 0, //bearing
+        pitch: 0,
         //interactive: false
     });
 
@@ -94,49 +94,45 @@ $(document).ready(function () {
     //var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
     var iconScale = d3.scaleOrdinal(['halodot_g']).domain(amenityCategories);
 
-    
+
     var catAngles = {
         'Attractions': {
             padding: 50,
-            pitch: 50,
+            pitch: 0,
             bearing: -50
         },
-        'Fitness' : {
+        'Fitness': {
             padding: 50,
             pitch: 60,
             bearing: 9
-        }, 
-        'Food and Drink' : {
+        },
+        'Food and Drink': {
             padding: 50,
-            pitch: 50,
+            pitch: 35,
             bearing: -50
         },
-        'Hotels' : {
+        'Hotels': {
             padding: 25,
             pitch: 70,
             bearing: 123
         },
-        'Retail' : {
+        'Retail': {
             padding: 25,
-            pitch: 50,
+            pitch: 0,
+            bearing: 0
+        },
+        'Services': {
+            padding: 50,
+            pitch: 0,
             bearing: -50
         },
-        'Services' : {
-            padding: 50,
-            pitch: 50,
-            bearing: -50
-        }, 
-        'Transit' : {
+        'Transit': {
             padding: 50,
             pitch: 0,
             bearing: 0
         }
 
     }
-
-
-
-
 
     //Map init
     map.on('load', function () {
@@ -146,38 +142,14 @@ $(document).ready(function () {
             'data': amenityData
 
         });
-        //add a geo JSON source for 10 Exchange place. alone.
-        map.addSource('tenExchange', {
-            'type': 'geojson',
-            'data': tenExchangeFeature
-
-        });
-
-
-        map.addLayer({
-            'id': 'tenExchangePoint',
-            'type': 'symbol',
-            'source': 'tenExchange',
-            'layout': {
-                'icon-image': 'teardrop_g',
-                'icon-anchor': 'bottom',
-                'icon-size': .5,
-                'icon-allow-overlap': true
-            }
-        });
-
-        map.setLayoutProperty('tenExchangePoint', 'visibility', 'visible');
-
+        //for each ammenity
         amenityData.features.forEach(function (feature) {
-
+            //find the category name
             var category = feature.properties['Category'];
-            var layerID = category;
-
-
-            if (!map.getLayer(layerID)) {
-
+            //and if it has not been done, add the category as a layer and use the filter to add all the features that match.
+            if (!map.getLayer(category)) {
                 map.addLayer({
-                    'id': layerID,
+                    'id': category,
                     'type': 'symbol',
                     'source': 'amenityPoints',
                     'layout': {
@@ -189,63 +161,72 @@ $(document).ready(function () {
                     'filter': ['==', 'Category', category]
                 });
             }
-
-
-            map.setLayoutProperty(layerID, 'visibility', 'none');
+            //and make it invisible to start.
+            map.setLayoutProperty(category, 'visibility', 'none');
 
 
         })
 
+        //add a geo JSON source for 10 Exchange place. alone.
+        map.addSource('tenExchange', {
+            'type': 'geojson',
+            'data': tenExchangeFeature
+
+        });
+        //add a layer for 10 Exchange
+        map.addLayer({
+            'id': 'tenExchangePoint',
+            'type': 'symbol',
+            'source': 'tenExchange',
+            'layout': {
+                'icon-image': 'tenx_g_sq',
+                // 'text-field' : ['get', 'Name'],
+                'icon-anchor': 'bottom',
+                'icon-size': .5,
+                'icon-allow-overlap': true
+            }
+        });
+
     });
 
-    //Popup and flyto
-    function flyToStore(currentFeature) {
-        map.flyTo({
-            center: currentFeature.geometry.coordinates,
-            zoom: 15
-        });
-    }
-
-
-    var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
-
-
-
+    //all the popups
     function createPopUp(feature) {
-
-
-
-
         var description = feature.properties.Category;
-
+        var id = feature.properties.id;
         console.log(feature.properties.Name);
+
+        //TRYING TO GET GOOGLE BIZ INFO
+        //Searching the google knowledge graf
+        var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+        var places_details = 'https://maps.googleapis.com/maps/api/place/details/json?'
+        var places_photos = 'https://maps.googleapis.com/maps/api/place/photo?parameters'
+        var api_key = "AIzaSyAW2bdPy8GEgbDO9l4v-uZRV3T51YCmi6A"
+        var place_id = 'ChIJDzgYtbZQwokRXGwdVgeGfjs'
+        //const img = await d3.image("https://example.com/test.png", {crossOrigin: "anonymous"});
+
+        //https://maps.googleapis.com/maps/api/place/details/json?
+        //place_id=ChIJN1t_tDeuEmsRUsoyG83frY4
+        //&fields=name,rating,formatted_phone_number
+        //&key=YOUR_API_KEY
+
 
         var params = {
             'query': feature.properties.Name,
             'limit': 10,
             // 'types': 'LocalBusiness',
-            // 'ids': 'LocalBusiness',
+            // 'ids': 'ChIJDzgYtbZQwokRXGwdVgeGfjs',
             'indent': true,
-            'key' : 'AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo',
-          };
-      
-      
-          $.getJSON(service_url + '?callback=?', params, function(response) {
-              console.log(response);
-              description = response.itemListElement[0]['description'];
-            $.each(response.itemListElement, function(i, element) {
-      
-              // $('<div>', {text:element['result']['name']}).appendTo(document.body);
-      
-              //console.log(element);
-      
-            });
-          });
+            'key': api_key,
+        };
 
-          
+        var reqUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + place_id + '&fields=name,rating,formatted_phone_number,photos&key=AIzaSyAW2bdPy8GEgbDO9l4v-uZRV3T51YCmi6A'
 
+        // d3.json(reqUrl).then(function(d) {
+        //     console.log(d);
+        // })
+
+        //ADD POP UP
         var popUps = document.getElementsByClassName('mapboxgl-popup');
-        /** Check if there is already a popup on the map and if so, remove it */
         if (popUps[0]) popUps[0].remove();
 
         var popup = new mapboxgl.Popup({
@@ -257,12 +238,94 @@ $(document).ready(function () {
                 '<h4>' + description + '</h4>'
             )
             .addTo(map);
+        
+        
+        //draw the route to the location
+        var tenx_x = tenExchangeFeature.features[0].geometry.coordinates[0];
+        var tenx_y = tenExchangeFeature.features[0].geometry.coordinates[1];
+        var feature_x = feature.geometry.coordinates[0];
+        var feature_y = feature.geometry.coordinates[1];
+
+
+        //directions example request.
+        var reqUrl = "https://api.mapbox.com/directions/v5/mapbox/cycling/" + tenx_x + '%2C' + tenx_y + '%3B' + feature_x + '%2C' + feature_y + '?alternatives=false&geometries=geojson&steps=false&access_token=pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
+
+
+        d3.json(reqUrl).then(function (d) {
+            addRoute(d);
+        })
+
+        addMarker(feature);
     }
 
 
+    function addRoute(d) {
+
+        var route = d.routes[0].geometry;
+
+
+        if (map.getLayer('route')) map.removeLayer('route');
+        if (map.getSource('route')) map.removeSource('route');
+
+        map.addSource('route', {
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': route
+            }
+        });
+
+        map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#5C6972',
+                'line-width': 2,
+                'line-dasharray': [.1, 2]
+            }
+        });
+
+        map.moveLayer('route', 'tenExchangePoint');
+    }
+
+    
+
+    function addMarker(d) {
+
+        console.log(d)
+
+        if (map.getLayer('focusmarker')) map.removeLayer('focusmarker');
+        if (map.getSource('focusmarker')) map.removeSource('focusmarker');
+
+        map.addSource('focusmarker', {
+            'type': 'geojson',
+            'data': d
+        });
+
+        map.addLayer({
+            'id': 'focusmarker',
+            'type': 'symbol',
+            'source': 'focusmarker',
+            'layout': {
+                'icon-image': 'teardrop_g',
+                // 'text-field' : ['get', 'Name'],
+                'icon-anchor': 'bottom',
+                'icon-size': .25,
+                'icon-allow-overlap': true
+            }
+        });
+
+        //map.moveLayer('route', 'tenExchangePoint');
+    }
 
     //MAP CLICK
-    map.on('mousemove', function (e) {
+    map.on('click', function (e) {
         // If the user clicked on one of your markers, get its information.
         var features = map.queryRenderedFeatures(e.point, {
             layers: amenityCategories //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
@@ -272,38 +335,47 @@ $(document).ready(function () {
             return;
         }
         var feature = features[0];
+
         createPopUp(feature);
 
     });
-
 
     //LIST UX BEHAVIOR
     var amenityCategoryHeaders = d3.selectAll(".amenity-header");
     var amenityListItems = d3.selectAll(".amenity-item");
 
-    amenityListItems.on("click", function (event, d) {
+    amenityListItems.on("mouseover", function (event, d) {
+
+        //1. Change the icon to the teardtop on click, and make sure all other go back to normal.
+        //2. Show route.
+
         var featureName = d3.select(this).select('div').select('div').html();
         featureName = featureName.replace('&amp;', '&');
         var featureJSON = amenityData.features.find(d => d.properties.Name == featureName);
-        console.log(featureJSON);
-
         var mapFeature = map.queryRenderedFeatures({
-            layers: amenityCategories.concat(['tenExchangePoint', '10-exchange-ammenities']),
+            layers: amenityCategories,
             'filter': ['==', 'Name', featureName]
         });
 
         if (!mapFeature.length) {
             return;
         }
+
         var feature = mapFeature[0];
 
-        createPopUp(feature)
+        createPopUp(feature);
 
     })
 
     amenityCategoryHeaders.on("click", function (event, d) {
         var mapCat = d3.select(this).select("div:nth-child(2)").html();
         currentCategory = mapCat;
+
+        if (map.getLayer('route')) map.removeLayer('route');
+
+        var popUps = document.getElementsByClassName('mapboxgl-popup');
+        /** Check if there is already a popup on the map and if so, remove it */
+        if (popUps[0]) popUps[0].remove();
 
         amenityCategories.forEach(function (d) {
             if (d == mapCat) {
@@ -335,28 +407,11 @@ $(document).ready(function () {
 
     })
 
-
-
-
     ////END
-
-
-    //google API key
-    //    AIzaSyDDMS4gUNhEAxXEcqU3jHcLrLwdURJjZOo
-
-
-
-
-
-
 });
 
 
-
-
 //DATA & ICONS
-
-
 var tenExchangeFeature = {
     "type": "FeatureCollection",
     "features": [{
@@ -399,6 +454,34 @@ var amenityData = {
                 "County": "Hudson County",
                 "Zip": 7302,
                 "Country": "US"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-74.01570049099769, 40.71908615042376]
+            },
+            "properties": {
+                "id": "amenity-sunset",
+                "Name": "Sail Sunset",
+                "Category": "Attractions",
+                "Address": "Pier 25, West St, New York, NY 10013",
+                "Google Business URL": "https://www.sailsunset.com/"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-74.01708401644817, 40.712389323993484]
+            },
+            "properties": {
+                "id": "amenity-ventura",
+                "Name": "Ventura Private Charters",
+                "Category": "Attractions",
+                "Address": "North Cove Marina at Brookfield Place, New York, NY 10281",
+                "Google Business URL": "https://www.sailnewyork.com/"
             }
         },
         {
@@ -865,7 +948,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.044267, 40.71696]
+                "coordinates": [-74.04262797283612, 40.71967936283245]
             },
             "properties": {
                 "id": "amenity-22",
@@ -3142,7 +3225,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.03119, 40.716119]
+                "coordinates": [-74.03253758388067, 40.71713545942441]
             },
             "properties": {
                 "id": "amenity-121",
@@ -3993,7 +4076,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.06547, 40.729999]
+                "coordinates": [-74.03727152627026, 40.71657585680831]
             },
             "properties": {
                 "id": "amenity-158",
@@ -4154,7 +4237,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.047304, 40.726001]
+                "coordinates": [-74.03275444400069, 40.71369724047739]
             },
             "properties": {
                 "id": "amenity-165",
@@ -4223,7 +4306,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.047304, 40.726001]
+                "coordinates": [-74.03415493050737, 40.71599832666183]
             },
             "properties": {
                 "id": "amenity-168",
@@ -4292,7 +4375,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.047304, 40.726001]
+                "coordinates": [-74.03728100167167, 40.72271676609732]
             },
             "properties": {
                 "id": "amenity-171",
@@ -4315,7 +4398,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.047304, 40.726001]
+                "coordinates": [-74.03398154400062, 40.71962468894443]
             },
             "properties": {
                 "id": "amenity-172",
@@ -4361,7 +4444,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.096771, 40.68604]
+                "coordinates": [-74.03106093050727, 40.728970243728305]
             },
             "properties": {
                 "id": "amenity-174",
@@ -4453,7 +4536,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.047304, 40.726001]
+                "coordinates": [-74.0432719728364, 40.714522297047374]
             },
             "properties": {
                 "id": "amenity-178",
@@ -4499,7 +4582,7 @@ var amenityData = {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-74.018244, 40.68863]
+                "coordinates": [-74.01299995486342, 40.700643064249434]
             },
             "properties": {
                 "id": "amenity-180",
