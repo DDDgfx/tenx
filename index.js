@@ -41,6 +41,7 @@ $(document).ready(function () {
 
 
         suitePolygon.on("mouseover", function (event, d) {
+            console.log(rowLink);
             d3.select(this).selectAll(".suite").transition().style("fill-opacity", 1);
             aItems.transition().style("opacity", .3);
             item.transition().style("opacity", 1);
@@ -52,7 +53,7 @@ $(document).ready(function () {
         })
 
         suites.on("click", function (event, d) {
-            console.log(rowLink);
+            
             window.open(rowLink, "_top");
         })
 
