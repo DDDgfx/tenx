@@ -26,6 +26,7 @@ $(document).ready(function () {
     //for each row in the teble
     aItems.each(function (d, i) {
         var item = d3.select(this);
+        console.log(this);
 
         var rowLink = item.select("a").attr("href") //the click link for the row
         const itemData = new Map();
@@ -51,6 +52,7 @@ $(document).ready(function () {
         })
 
         suites.on("click", function (event, d) {
+            console.log(rowLink);
             window.open(rowLink, "_top");
         })
 
@@ -73,6 +75,16 @@ $(document).ready(function () {
 
 
     })
+
+
+
+
+
+
+
+
+
+
 
     ////MAPBOX
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
