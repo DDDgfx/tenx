@@ -150,7 +150,7 @@ $(document).ready(function () {
             'source': 'amenityPoints',
             'layout': {
                 'icon-image': 'halodot_g',
-                'icon-anchor': 'bottom',
+                'icon-anchor': 'center',
                 'icon-size': .15,
                 'icon-allow-overlap': true
             }
@@ -353,7 +353,17 @@ $(document).ready(function () {
         }
         var feature = features[0];
 
+        amenityListItems.transition().style("opacity", .25);
 
+        // amenityListItems.filter(d => d.Name == feature.properties.Name).transition().style("opacity", 1);
+        amenityListItems.each(function (d) {
+            var featureName = d3.select(this).select('div').select('div').html();
+            featureName = featureName.replace('&amp;', '&');
+            if (featureName == feature.properties.Name) {
+                d3.select(this).transition().style("opacity", 1);
+            }
+        })
+        console.log(feature);
 
         createPopUp(feature);
 
@@ -367,6 +377,8 @@ $(document).ready(function () {
 
         //1. Change the icon to the teardtop on click, and make sure all other go back to normal.
         //2. Show route.
+        amenityListItems.transition().style("opacity", .25);
+        d3.select(this).transition().style("opacity", 1);
 
         var featureName = d3.select(this).select('div').select('div').html();
         featureName = featureName.replace('&amp;', '&');
@@ -388,41 +400,46 @@ $(document).ready(function () {
 
     amenityCategoryHeaders.on("click", function (event, d) {
         var mapCat = d3.select(this).select("div:nth-child(2)").html();
-        currentCategory = mapCat;
-
-        if (map.getLayer('route')) map.removeLayer('route');
-
         var popUps = document.getElementsByClassName('mapboxgl-popup');
         /** Check if there is already a popup on the map and if so, remove it */
         if (popUps[0]) popUps[0].remove();
 
-        amenityCategories.forEach(function (d) {
-            if (d == mapCat) {
-                map.setLayoutProperty(d, 'visibility', 'visible');
-            } else {
-                map.setLayoutProperty(d, 'visibility', 'none');
-            }
+        if (mapCat == currentCategory) {
+            map.setLayoutProperty('amenities', 'visibility', 'visible');
+        } else {
+            currentCategory = mapCat;
 
-        })
 
-        var features = amenityData.features.filter(d => d.properties.Category == mapCat);
+            map.setLayoutProperty('amenities', 'visibility', 'none');
+    
+            if (map.getLayer('route')) map.removeLayer('route');
+    
+    
+            amenityCategories.forEach(function (d) {
+                if (d == mapCat) {
+                    map.setLayoutProperty(d, 'visibility', 'visible');
+                } else {
+                    map.setLayoutProperty(d, 'visibility', 'none');
+                }
+    
+            })
+    
+            var features = amenityData.features.filter(d => d.properties.Category == mapCat);
+    
+            var bounds = new mapboxgl.LngLatBounds();
+    
+            features.forEach(function (feature) {
+                bounds.extend(feature.geometry.coordinates);
+            });
+    
+            map.fitBounds(bounds, {
+                padding: catAngles[mapCat]["padding"],
+                pitch: catAngles[mapCat]["pitch"],
+                bearing: catAngles[mapCat]["bearing"]
+            });
 
-        var bounds = new mapboxgl.LngLatBounds();
+        }
 
-        features.forEach(function (feature) {
-            bounds.extend(feature.geometry.coordinates);
-        });
-
-        map.fitBounds(bounds, {
-            padding: catAngles[mapCat]["padding"],
-            pitch: catAngles[mapCat]["pitch"],
-            bearing: catAngles[mapCat]["bearing"]
-        });
-
-        // map.flyTo({
-        //     pitch: 0,
-        //     bearing: 0
-        // })
 
     })
 
