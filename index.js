@@ -250,8 +250,9 @@ $(document).ready(function () {
             })
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
-                '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">' + feature.properties.Name + '</a></h3>' +
-                '<h4>' + description + '</h4>'
+                '<h3>' + feature.properties.Name + '</h3>' +
+                '<h4>' + description + '</h4>' +
+                '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">directions</a></h3>'
             )
             .addTo(map);
         
