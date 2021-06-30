@@ -81,9 +81,9 @@ $(document).ready(function () {
         container: 'map',
         style: 'mapbox://styles/cizzle/ckqi5oie60jyd17s4xujbxpch',
         center: [-74.033216, 40.716560], // starting position [lng, lat]
-        zoom: 14, // starting zoom
-        bearing: 0, //bearing
-        pitch: 0,
+        zoom: 15, // starting zoom
+        bearing: -48, //bearing
+        pitch: 52,
         //interactive: false
     });
 
@@ -104,7 +104,7 @@ $(document).ready(function () {
         'Fitness': {
             padding: 50,
             pitch: 60,
-            bearing: 9
+            bearing: 0
         },
         'Food and Drink': {
             padding: 50,
@@ -142,6 +142,22 @@ $(document).ready(function () {
             'data': amenityData
 
         });
+
+
+        map.addLayer({
+            'id': 'amenities',
+            'type': 'symbol',
+            'source': 'amenityPoints',
+            'layout': {
+                'icon-image': 'halodot_g',
+                'icon-anchor': 'bottom',
+                'icon-size': .15,
+                'icon-allow-overlap': true
+            }
+        });
+
+
+
         //for each ammenity
         amenityData.features.forEach(function (feature) {
             //find the category name
@@ -326,15 +342,18 @@ $(document).ready(function () {
 
     //MAP CLICK
     map.on('click', function (e) {
+        console.log("zoom: " + map.getZoom() + "pitch: " + map.getPitch() + "bearing: " + map.getBearing());
         // If the user clicked on one of your markers, get its information.
         var features = map.queryRenderedFeatures(e.point, {
-            layers: amenityCategories //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
+            layers: amenityCategories.concat(['amenities']), //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
         });
 
         if (!features.length) {
             return;
         }
         var feature = features[0];
+
+
 
         createPopUp(feature);
 
