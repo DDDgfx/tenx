@@ -22,13 +22,22 @@ $(document).ready(function () {
     aTableHeaders.each(function (d, i) {
         aTableHeaderList.push(this.innerHTML.toLowerCase());
     }); //push the column headers into it
+    console.log(aTableHeaderList);
     var aItems = aTableContainer.selectAll(".availability-item"); //get rows of the table
     //for each row in the teble
     aItems.each(function (d, i) {
         var item = d3.select(this);
         console.log(this);
 
+
+
         var rowLink = item.select("a").attr("href") //the click link for the row
+        var suiteCol = item.select("a").select('.availability-table-row').selectAll("div");
+        var suiteName = d3.select(suiteCol.nodes()[aTableHeaderList.indexOf("suite")]).html().toLowerCase();
+        console.log(suiteName);
+
+        var detailurl = "availability/" + suiteName; 
+
         const itemData = new Map();
         item.select(".availability-table-row").selectAll("div").each(function (d, i) {
             itemData.set(aTableHeaderList[i], this.innerHTML.toLowerCase());
@@ -36,12 +45,12 @@ $(document).ready(function () {
         var suitePolygon = svg.select("#s-" + itemData.get("suite"));
         var floorPolygon = svg.select("#f-" + itemData.get("floor"));
 
+
         suitePolygon.selectAll(".suite").style("fill-opacity", .25);
         //floorPolygon.selectAll(".floor").style("fill-opacity", .1);
-
-
         suitePolygon.on("mouseover", function (event, d) {
             console.log(rowLink);
+            console.log(detailurl);
             d3.select(this).selectAll(".suite").transition().style("fill-opacity", 1);
             aItems.transition().style("opacity", .3);
             item.transition().style("opacity", 1);
@@ -52,8 +61,8 @@ $(document).ready(function () {
             aItems.transition().style("opacity", 1);
         })
 
-        suites.on("click", function (event, d) {
-            
+        suitePolygon.on("click", function (event, d) {
+
             window.open(rowLink, "_top");
         })
 
@@ -78,384 +87,352 @@ $(document).ready(function () {
     })
 
 
-
-
-
-
-
-
-
-
-
-    ////MAPBOX
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
-    //Create the map
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/cizzle/ckqi5oie60jyd17s4xujbxpch',
-        center: [-74.033216, 40.716560], // starting position [lng, lat]
-        zoom: 15, // starting zoom
-        bearing: -48, //bearing
-        pitch: 52,
-        //interactive: false
-    });
-
-    //Keep the list of amenity categories.
-    var amenityCategories = ['Attractions', 'Fitness', 'Food and Drink', 'Hotels', 'Retail', 'Services', 'Transit'];
-    var currentCategory;
-
-    //var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
-    var iconScale = d3.scaleOrdinal(['halodot_g']).domain(amenityCategories);
-
-
-    var catAngles = {
-        'Attractions': {
-            padding: 50,
-            pitch: 0,
-            bearing: -50
-        },
-        'Fitness': {
-            padding: 50,
-            pitch: 60,
-            bearing: 0
-        },
-        'Food and Drink': {
-            padding: 50,
-            pitch: 35,
-            bearing: -50
-        },
-        'Hotels': {
-            padding: 25,
-            pitch: 70,
-            bearing: 123
-        },
-        'Retail': {
-            padding: 25,
-            pitch: 0,
-            bearing: 0
-        },
-        'Services': {
-            padding: 50,
-            pitch: 0,
-            bearing: -50
-        },
-        'Transit': {
-            padding: 50,
-            pitch: 0,
-            bearing: 0
-        }
-
-    }
-
-    //Map init
-    map.on('load', function () {
-        // Add a GeoJSON source for all amenities
-        map.addSource('amenityPoints', {
-            'type': 'geojson',
-            'data': amenityData
-
+    // THE WHOLE MAP INSIDE THIS CONDITIONAL.
+    if (d3.select("map")) {
+        console.log("map init");
+        ////MAPBOX
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
+        //Create the map
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/cizzle/ckqi5oie60jyd17s4xujbxpch',
+            center: [-74.033216, 40.716560], // starting position [lng, lat]
+            zoom: 15, // starting zoom
+            bearing: -48, //bearing
+            pitch: 52,
+            //interactive: false
         });
 
+        //Keep the list of amenity categories.
+        var amenityCategories = ['Attractions', 'Fitness', 'Food and Drink', 'Hotels', 'Retail', 'Services', 'Transit'];
+        var currentCategory;
 
-        map.addLayer({
-            'id': 'amenities',
-            'type': 'symbol',
-            'source': 'amenityPoints',
-            'layout': {
-                'icon-image': 'halodot_g',
-                'icon-anchor': 'center',
-                'icon-size': .15,
-                'icon-allow-overlap': true
-            }
-        });
+        //var iconScale = d3.scaleOrdinal(['attractions', 'fitness', 'food', 'hotels', 'retail', 'services', 'transit']).domain(amenityCategories);
+        var iconScale = d3.scaleOrdinal(['halodot_g']).domain(amenityCategories);
 
 
-
-        //for each ammenity
-        amenityData.features.forEach(function (feature) {
-            //find the category name
-            var category = feature.properties['Category'];
-            //and if it has not been done, add the category as a layer and use the filter to add all the features that match.
-            if (!map.getLayer(category)) {
-                map.addLayer({
-                    'id': category,
-                    'type': 'symbol',
-                    'source': 'amenityPoints',
-                    'layout': {
-                        'icon-image': iconScale(category),
-                        'icon-anchor': 'bottom',
-                        'icon-size': .25,
-                        'icon-allow-overlap': true
-                    },
-                    'filter': ['==', 'Category', category]
-                });
-            }
-            //and make it invisible to start.
-            map.setLayoutProperty(category, 'visibility', 'none');
-
-
-        })
-
-        //add a geo JSON source for 10 Exchange place. alone.
-        map.addSource('tenExchange', {
-            'type': 'geojson',
-            'data': tenExchangeFeature
-
-        });
-        //add a layer for 10 Exchange
-        map.addLayer({
-            'id': 'tenExchangePoint',
-            'type': 'symbol',
-            'source': 'tenExchange',
-            'layout': {
-                'icon-image': 'tenx_g_sq',
-                // 'text-field' : ['get', 'Name'],
-                'icon-anchor': 'bottom',
-                'icon-size': .5,
-                'icon-allow-overlap': true
-            }
-        });
-
-    });
-
-    //all the popups
-    function createPopUp(feature) {
-        var description = feature.properties.Category;
-        var id = feature.properties.id;
-        console.log(feature.properties.Name);
-
-        //TRYING TO GET GOOGLE BIZ INFO
-        //Searching the google knowledge graf
-        var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
-        var places_details = 'https://maps.googleapis.com/maps/api/place/details/json?'
-        var places_photos = 'https://maps.googleapis.com/maps/api/place/photo?parameters'
-        var api_key = "AIzaSyAW2bdPy8GEgbDO9l4v-uZRV3T51YCmi6A"
-        var place_id = 'ChIJDzgYtbZQwokRXGwdVgeGfjs'
-        //const img = await d3.image("https://example.com/test.png", {crossOrigin: "anonymous"});
-
-        //https://maps.googleapis.com/maps/api/place/details/json?
-        //place_id=ChIJN1t_tDeuEmsRUsoyG83frY4
-        //&fields=name,rating,formatted_phone_number
-        //&key=YOUR_API_KEY
-
-
-        var params = {
-            'query': feature.properties.Name,
-            'limit': 10,
-            // 'types': 'LocalBusiness',
-            // 'ids': 'ChIJDzgYtbZQwokRXGwdVgeGfjs',
-            'indent': true,
-            'key': api_key,
-        };
-
-        var reqUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + place_id + '&fields=name,rating,formatted_phone_number,photos&key=AIzaSyAW2bdPy8GEgbDO9l4v-uZRV3T51YCmi6A'
-
-        // d3.json(reqUrl).then(function(d) {
-        //     console.log(d);
-        // })
-
-        //ADD POP UP
-        var popUps = document.getElementsByClassName('mapboxgl-popup');
-        if (popUps[0]) popUps[0].remove();
-
-        var popup = new mapboxgl.Popup({
-                offset: [0, -25]
-            })
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(
-                '<h3>' + feature.properties.Name + '</h3>' +
-                '<h4>' + description + '</h4>' +
-                '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">directions</a></h3>'
-            )
-            .addTo(map);
-        
-        
-        //draw the route to the location
-        var tenx_x = tenExchangeFeature.features[0].geometry.coordinates[0];
-        var tenx_y = tenExchangeFeature.features[0].geometry.coordinates[1];
-        var feature_x = feature.geometry.coordinates[0];
-        var feature_y = feature.geometry.coordinates[1];
-
-
-        //directions example request.
-        var reqUrl = "https://api.mapbox.com/directions/v5/mapbox/cycling/" + tenx_x + '%2C' + tenx_y + '%3B' + feature_x + '%2C' + feature_y + '?alternatives=false&geometries=geojson&steps=false&access_token=pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
-
-
-        d3.json(reqUrl).then(function (d) {
-            addRoute(d);
-        })
-
-        addMarker(feature);
-    }
-
-
-    function addRoute(d) {
-
-        var route = d.routes[0].geometry;
-
-
-        if (map.getLayer('route')) map.removeLayer('route');
-        if (map.getSource('route')) map.removeSource('route');
-
-        map.addSource('route', {
-            'type': 'geojson',
-            'data': {
-                'type': 'Feature',
-                'properties': {},
-                'geometry': route
-            }
-        });
-
-        map.addLayer({
-            'id': 'route',
-            'type': 'line',
-            'source': 'route',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
+        var catAngles = {
+            'Attractions': {
+                padding: 50,
+                pitch: 0,
+                bearing: -50
             },
-            'paint': {
-                'line-color': '#5C6972',
-                'line-width': 2,
-                'line-dasharray': [.1, 2]
+            'Fitness': {
+                padding: 50,
+                pitch: 60,
+                bearing: 0
+            },
+            'Food and Drink': {
+                padding: 50,
+                pitch: 35,
+                bearing: -50
+            },
+            'Hotels': {
+                padding: 25,
+                pitch: 70,
+                bearing: 123
+            },
+            'Retail': {
+                padding: 25,
+                pitch: 0,
+                bearing: 0
+            },
+            'Services': {
+                padding: 50,
+                pitch: 0,
+                bearing: -50
+            },
+            'Transit': {
+                padding: 50,
+                pitch: 0,
+                bearing: 0
             }
-        });
 
-        map.moveLayer('route', 'tenExchangePoint');
-    }
-
-    
-
-    function addMarker(d) {
-
-        console.log(d)
-
-        if (map.getLayer('focusmarker')) map.removeLayer('focusmarker');
-        if (map.getSource('focusmarker')) map.removeSource('focusmarker');
-
-        map.addSource('focusmarker', {
-            'type': 'geojson',
-            'data': d
-        });
-
-        map.addLayer({
-            'id': 'focusmarker',
-            'type': 'symbol',
-            'source': 'focusmarker',
-            'layout': {
-                'icon-image': 'teardrop_g',
-                // 'text-field' : ['get', 'Name'],
-                'icon-anchor': 'bottom',
-                'icon-size': .25,
-                'icon-allow-overlap': true
-            }
-        });
-
-        //map.moveLayer('route', 'tenExchangePoint');
-    }
-
-    //MAP CLICK
-    map.on('click', function (e) {
-        console.log("zoom: " + map.getZoom() + "pitch: " + map.getPitch() + "bearing: " + map.getBearing());
-        // If the user clicked on one of your markers, get its information.
-        var features = map.queryRenderedFeatures(e.point, {
-            layers: amenityCategories.concat(['amenities']), //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
-        });
-
-        if (!features.length) {
-            return;
         }
-        var feature = features[0];
 
-        amenityListItems.transition().style("opacity", .25);
+        //Map init
+        map.on('load', function () {
+            // Add a GeoJSON source for all amenities
+            map.addSource('amenityPoints', {
+                'type': 'geojson',
+                'data': amenityData
 
-        // amenityListItems.filter(d => d.Name == feature.properties.Name).transition().style("opacity", 1);
-        amenityListItems.each(function (d) {
+            });
+
+
+            map.addLayer({
+                'id': 'amenities',
+                'type': 'symbol',
+                'source': 'amenityPoints',
+                'layout': {
+                    'icon-image': 'halodot_g',
+                    'icon-anchor': 'center',
+                    'icon-size': .15,
+                    'icon-allow-overlap': true
+                }
+            });
+
+
+
+            //for each ammenity
+            amenityData.features.forEach(function (feature) {
+                //find the category name
+                var category = feature.properties['Category'];
+                //and if it has not been done, add the category as a layer and use the filter to add all the features that match.
+                if (!map.getLayer(category)) {
+                    map.addLayer({
+                        'id': category,
+                        'type': 'symbol',
+                        'source': 'amenityPoints',
+                        'layout': {
+                            'icon-image': iconScale(category),
+                            'icon-anchor': 'bottom',
+                            'icon-size': .25,
+                            'icon-allow-overlap': true
+                        },
+                        'filter': ['==', 'Category', category]
+                    });
+                }
+                //and make it invisible to start.
+                map.setLayoutProperty(category, 'visibility', 'none');
+
+
+            })
+
+            //add a geo JSON source for 10 Exchange place. alone.
+            map.addSource('tenExchange', {
+                'type': 'geojson',
+                'data': tenExchangeFeature
+
+            });
+            //add a layer for 10 Exchange
+            map.addLayer({
+                'id': 'tenExchangePoint',
+                'type': 'symbol',
+                'source': 'tenExchange',
+                'layout': {
+                    'icon-image': 'tenx_g_sq',
+                    // 'text-field' : ['get', 'Name'],
+                    'icon-anchor': 'bottom',
+                    'icon-size': .5,
+                    'icon-allow-overlap': true
+                }
+            });
+
+        });
+
+        //all the popups
+        function createPopUp(feature) {
+            var description = feature.properties.Category;
+            var id = feature.properties.id;
+            console.log(feature.properties.Name);
+
+            //ADD POP UP
+            var popUps = document.getElementsByClassName('mapboxgl-popup');
+            if (popUps[0]) popUps[0].remove();
+
+            var popup = new mapboxgl.Popup({
+                    offset: [0, -25]
+                })
+                .setLngLat(feature.geometry.coordinates)
+                .setHTML(
+                    '<h3>' + feature.properties.Name + '</h3>' +
+                    '<h4>' + description + '</h4>' +
+                    '<h3><a target="_blank" href="' + feature.properties["Google Business URL"] + '">directions</a></h3>'
+                )
+                .addTo(map);
+
+
+            //draw the route to the location
+            var tenx_x = tenExchangeFeature.features[0].geometry.coordinates[0];
+            var tenx_y = tenExchangeFeature.features[0].geometry.coordinates[1];
+            var feature_x = feature.geometry.coordinates[0];
+            var feature_y = feature.geometry.coordinates[1];
+
+
+            //directions example request.
+            var reqUrl = "https://api.mapbox.com/directions/v5/mapbox/cycling/" + tenx_x + '%2C' + tenx_y + '%3B' + feature_x + '%2C' + feature_y + '?alternatives=false&geometries=geojson&steps=false&access_token=pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
+
+
+            d3.json(reqUrl).then(function (d) {
+                addRoute(d);
+            })
+
+            addMarker(feature);
+        }
+
+
+        function addRoute(d) {
+
+            var route = d.routes[0].geometry;
+
+
+            if (map.getLayer('route')) map.removeLayer('route');
+            if (map.getSource('route')) map.removeSource('route');
+
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': route
+                }
+            });
+
+            map.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#5C6972',
+                    'line-width': 2,
+                    'line-dasharray': [.1, 2]
+                }
+            });
+
+            map.moveLayer('route', 'tenExchangePoint');
+        }
+
+
+
+        function addMarker(d) {
+
+            console.log(d)
+
+            if (map.getLayer('focusmarker')) map.removeLayer('focusmarker');
+            if (map.getSource('focusmarker')) map.removeSource('focusmarker');
+
+            map.addSource('focusmarker', {
+                'type': 'geojson',
+                'data': d
+            });
+
+            map.addLayer({
+                'id': 'focusmarker',
+                'type': 'symbol',
+                'source': 'focusmarker',
+                'layout': {
+                    'icon-image': 'teardrop_g',
+                    // 'text-field' : ['get', 'Name'],
+                    'icon-anchor': 'bottom',
+                    'icon-size': .25,
+                    'icon-allow-overlap': true
+                }
+            });
+
+            //map.moveLayer('route', 'tenExchangePoint');
+        }
+
+        //MAP CLICK
+        map.on('click', function (e) {
+            console.log("zoom: " + map.getZoom() + "pitch: " + map.getPitch() + "bearing: " + map.getBearing());
+            // If the user clicked on one of your markers, get its information.
+            var features = map.queryRenderedFeatures(e.point, {
+                layers: amenityCategories.concat(['amenities']), //.concat(['tenExchangePoint', '10-exchange-ammenities']) // replace with your layer name
+            });
+
+            if (!features.length) {
+                return;
+            }
+            var feature = features[0];
+
+            amenityListItems.transition().style("opacity", .25);
+
+            // amenityListItems.filter(d => d.Name == feature.properties.Name).transition().style("opacity", 1);
+            amenityListItems.each(function (d) {
+                var featureName = d3.select(this).select('div').select('div').html();
+                featureName = featureName.replace('&amp;', '&');
+                if (featureName == feature.properties.Name) {
+                    d3.select(this).transition().style("opacity", 1);
+                }
+            })
+            console.log(feature);
+
+            createPopUp(feature);
+
+        });
+
+        //LIST UX BEHAVIOR
+        var amenityCategoryHeaders = d3.selectAll(".amenity-header");
+        var amenityListItems = d3.selectAll(".amenity-item");
+
+        amenityListItems.on("mouseover", function (event, d) {
+
+            //1. Change the icon to the teardtop on click, and make sure all other go back to normal.
+            //2. Show route.
+            amenityListItems.transition().style("opacity", .25);
+            d3.select(this).transition().style("opacity", 1);
+
             var featureName = d3.select(this).select('div').select('div').html();
             featureName = featureName.replace('&amp;', '&');
-            if (featureName == feature.properties.Name) {
-                d3.select(this).transition().style("opacity", 1);
+            var featureJSON = amenityData.features.find(d => d.properties.Name == featureName);
+            var mapFeature = map.queryRenderedFeatures({
+                layers: amenityCategories,
+                'filter': ['==', 'Name', featureName]
+            });
+
+            if (!mapFeature.length) {
+                return;
             }
+
+            var feature = mapFeature[0];
+
+            createPopUp(feature);
+
         })
-        console.log(feature);
 
-        createPopUp(feature);
+        amenityCategoryHeaders.on("click", function (event, d) {
+            var mapCat = d3.select(this).select("div:nth-child(2)").html();
+            var popUps = document.getElementsByClassName('mapboxgl-popup');
+            /** Check if there is already a popup on the map and if so, remove it */
+            if (popUps[0]) popUps[0].remove();
 
-    });
-
-    //LIST UX BEHAVIOR
-    var amenityCategoryHeaders = d3.selectAll(".amenity-header");
-    var amenityListItems = d3.selectAll(".amenity-item");
-
-    amenityListItems.on("mouseover", function (event, d) {
-
-        //1. Change the icon to the teardtop on click, and make sure all other go back to normal.
-        //2. Show route.
-        amenityListItems.transition().style("opacity", .25);
-        d3.select(this).transition().style("opacity", 1);
-
-        var featureName = d3.select(this).select('div').select('div').html();
-        featureName = featureName.replace('&amp;', '&');
-        var featureJSON = amenityData.features.find(d => d.properties.Name == featureName);
-        var mapFeature = map.queryRenderedFeatures({
-            layers: amenityCategories,
-            'filter': ['==', 'Name', featureName]
-        });
-
-        if (!mapFeature.length) {
-            return;
-        }
-
-        var feature = mapFeature[0];
-
-        createPopUp(feature);
-
-    })
-
-    amenityCategoryHeaders.on("click", function (event, d) {
-        var mapCat = d3.select(this).select("div:nth-child(2)").html();
-        var popUps = document.getElementsByClassName('mapboxgl-popup');
-        /** Check if there is already a popup on the map and if so, remove it */
-        if (popUps[0]) popUps[0].remove();
-
-        if (mapCat == currentCategory) {
-            map.setLayoutProperty('amenities', 'visibility', 'visible');
-        } else {
-            currentCategory = mapCat;
+            if (mapCat == currentCategory) {
+                map.setLayoutProperty('amenities', 'visibility', 'visible');
+            } else {
+                currentCategory = mapCat;
 
 
-            map.setLayoutProperty('amenities', 'visibility', 'none');
-    
-            if (map.getLayer('route')) map.removeLayer('route');
-    
-    
-            amenityCategories.forEach(function (d) {
-                if (d == mapCat) {
-                    map.setLayoutProperty(d, 'visibility', 'visible');
-                } else {
-                    map.setLayoutProperty(d, 'visibility', 'none');
-                }
-    
-            })
-    
-            var features = amenityData.features.filter(d => d.properties.Category == mapCat);
-    
-            var bounds = new mapboxgl.LngLatBounds();
-    
-            features.forEach(function (feature) {
-                bounds.extend(feature.geometry.coordinates);
-            });
-    
-            map.fitBounds(bounds, {
-                padding: catAngles[mapCat]["padding"],
-                pitch: catAngles[mapCat]["pitch"],
-                bearing: catAngles[mapCat]["bearing"]
-            });
+                map.setLayoutProperty('amenities', 'visibility', 'none');
 
-        }
+                if (map.getLayer('route')) map.removeLayer('route');
 
 
-    })
+                amenityCategories.forEach(function (d) {
+                    if (d == mapCat) {
+                        map.setLayoutProperty(d, 'visibility', 'visible');
+                    } else {
+                        map.setLayoutProperty(d, 'visibility', 'none');
+                    }
+
+                })
+
+                var features = amenityData.features.filter(d => d.properties.Category == mapCat);
+
+                var bounds = new mapboxgl.LngLatBounds();
+
+                features.forEach(function (feature) {
+                    bounds.extend(feature.geometry.coordinates);
+                });
+
+                map.fitBounds(bounds, {
+                    padding: catAngles[mapCat]["padding"],
+                    pitch: catAngles[mapCat]["pitch"],
+                    bearing: catAngles[mapCat]["bearing"]
+                });
+
+            }
+
+
+        })
+
+    }
+
+
 
     ////END
 });
