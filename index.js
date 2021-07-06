@@ -34,7 +34,7 @@ $(document).ready(function () {
         var rowLink = item.select("a").attr("href") //the click link for the row
         var suiteCol = item.select("a").select('.availability-table-row').selectAll("div");
         var suiteName = d3.select(suiteCol.nodes()[aTableHeaderList.indexOf("suite")]).html().toLowerCase();
-        console.log(suiteName);
+        //console.log(suiteName);
 
         var detailurl = "availability/" + suiteName; 
 
@@ -386,7 +386,19 @@ $(document).ready(function () {
         })
 
         amenityCategoryHeaders.on("click", function (event, d) {
-            var mapCat = d3.select(this).select("div:nth-child(2)").html();
+            
+            var mapCat = '';
+            //find 
+            var findCat = d3.select(this).selectAll("div").filter(function(d){
+                return this.innerHTML != "";
+            });
+            
+            findCat.each(function(d)  {mapCat = this.innerHTML});    
+            
+            // .filter(function(d) {
+            //     d3.select(this).html != "";
+            // }).html;
+
             var popUps = document.getElementsByClassName('mapboxgl-popup');
             /** Check if there is already a popup on the map and if so, remove it */
             if (popUps[0]) popUps[0].remove();
