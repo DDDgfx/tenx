@@ -29,24 +29,67 @@ $(document).ready(function () {
         var item = d3.select(this);
         console.log(this);
 
-
-
         var rowLink = item.select("a").attr("href") //the click link for the row
         var suiteCol = item.select("a").select('.availability-table-row').selectAll("div");
-        var suiteName = d3.select(suiteCol.nodes()[aTableHeaderList.indexOf("suite")]).html().toLowerCase();
+        var suiteName = d3.select(suiteCol.nodes()[aTableHeaderList.indexOf("unit")]).html().toLowerCase();
         //console.log(suiteName);
 
         var detailurl = "availability/" + suiteName; 
 
         const itemData = new Map();
-        item.select(".availability-table-row").selectAll("div").each(function (d, i) {
-            itemData.set(aTableHeaderList[i], this.innerHTML.toLowerCase());
+
+        item.select(".availability-table-row").selectChildren("div").each(function (d, i) {
+            // console.log(i);
+            // console.log(this);
+            
+            if (i === 0) {
+
+                itemData.set(aTableHeaderList[i], d3.select(this).select('div').node().innerHTML.toLowerCase());
+            } else if (i > 0) {
+
+                
+                itemData.set(aTableHeaderList[i], this.innerHTML.toLowerCase());
+            }
+           
         })
-        var suitePolygon = svg.select("#s-" + itemData.get("suite"));
+
+        var suitePolygon = svg.select("#s-" + itemData.get("unit"));
         var floorPolygon = svg.select("#f-" + itemData.get("floor"));
 
-
+        //console.log(itemData);
         suitePolygon.selectAll(".suite").style("fill-opacity", .25);
+        
+        if (suitePolygon.empty()) {
+            console.log('no suite polygon');
+            floorPolygon.selectAll(".floor").style("fill-opacity", .25);
+
+
+
+            floorPolygon.on("mouseover", function (event, d) {
+
+                d3.select(this).selectAll(".floor").transition().style("fill-opacity", 1);
+                aItems.transition().style("opacity", .3);
+                item.transition().style("opacity", 1);
+            });
+
+            floorPolygon.on("mouseleave", function (event, d) {
+
+                // d3.select(this).selectAll(".floor").transition().style("fill-opacity", 1);
+                // aItems.transition().style("opacity", .3);
+                // item.transition().style("opacity", 1);
+
+                d3.select(this).selectAll(".floor").transition().style("fill-opacity", .25);
+                aItems.transition().style("opacity", 1);
+
+            });
+
+
+            floorPolygon.on("click", function (event, d) {
+
+                window.open(rowLink, "_top");
+            })
+            
+        }
         //floorPolygon.selectAll(".floor").style("fill-opacity", .1);
         suitePolygon.on("mouseover", function (event, d) {
             console.log(rowLink);
@@ -56,7 +99,7 @@ $(document).ready(function () {
             item.transition().style("opacity", 1);
         })
 
-        suites.on("mouseleave", function (event, d) {
+        suitePolygon.on("mouseleave", function (event, d) {
             d3.select(this).selectAll(".suite").transition().style("fill-opacity", .25);
             aItems.transition().style("opacity", 1);
         })
@@ -70,12 +113,22 @@ $(document).ready(function () {
         item.on("mouseover", function (event, d) {
             aItems.transition().style("opacity", .3);
             d3.select(this).transition().style("opacity", 1);
+            
             suitePolygon.selectAll(".suite").transition().style("fill-opacity", 1);
+            if (suitePolygon.empty()) {
+                console.log('not suite polygon');
+                floorPolygon.selectAll(".floor").transition().style("fill-opacity", 1);
+            }
         })
 
         item.on("mouseleave", function (event, d) {
             aItems.transition().style("opacity", 1);
             suitePolygon.selectAll(".suite").transition().style("fill-opacity", .25);
+
+            if (suitePolygon.empty()) {
+                console.log('not suite polygon');
+                floorPolygon.selectAll(".floor").transition().style("fill-opacity", .25);
+            }
 
         })
 
