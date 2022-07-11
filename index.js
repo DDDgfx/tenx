@@ -88,7 +88,7 @@ $(document).ready(function () {
 
 
     // THE WHOLE MAP INSIDE THIS CONDITIONAL.
-    if (d3.select("map")) {
+    if (d3.select("#map")) {
         console.log("map init");
         ////MAPBOX
         mapboxgl.accessToken = 'pk.eyJ1IjoiY2l6emxlIiwiYSI6ImNrcDJ0MjhteTE5cGsyb213bms0dHp6c3QifQ.-dc9k9y6KKnDlE5UszjS9A';
