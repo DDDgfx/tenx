@@ -1,3 +1,8 @@
+
+//https://cdn.jsdelivr.net/gh//DDDgfx/tenx@973a7c6c5c752cc1500ea491a7ea13be75e16a48/index.js"
+
+//<script src="https://cdn.jsdelivr.net/gh//DDDgfx/tenx@973a7c6c5c752cc1500ea491a7ea13be75e16a48/index.js"></script>;
+
 $(document).ready(function () {
 
     console.log("ready steady!");
@@ -397,7 +402,7 @@ $(document).ready(function () {
 
             // amenityListItems.filter(d => d.Name == feature.properties.Name).transition().style("opacity", 1);
             amenityListItems.each(function (d) {
-                var featureName = d3.select(this).select('div').select('div').html();
+                var featureName = d3.select(this).select('div').html();
                 featureName = featureName.replace('&amp;', '&');
                 if (featureName == feature.properties.Name) {
                     d3.select(this).transition().style("opacity", 1);
@@ -411,6 +416,7 @@ $(document).ready(function () {
 
         //LIST UX BEHAVIOR
         var amenityCategoryHeaders = d3.selectAll(".amenity-header");
+        
         var amenityListItems = d3.selectAll(".amenity-item");
 
         amenityListItems.on("mouseover", function (event, d) {
@@ -420,15 +426,22 @@ $(document).ready(function () {
             amenityListItems.transition().style("opacity", .25);
             d3.select(this).transition().style("opacity", 1);
 
-            var featureName = d3.select(this).select('div').select('div').html();
+            console.log(d3.select(this).select('div').html());
+            
+            var featureName = d3.select(this).select('div').html();
+            
             featureName = featureName.replace('&amp;', '&');
+
             var featureJSON = amenityData.features.find(d => d.properties.Name == featureName);
+            console.log(featureJSON);
+            
             var mapFeature = map.queryRenderedFeatures({
-                layers: amenityCategories,
+                layers: amenityCategories.concat(['amenities']),
                 'filter': ['==', 'Name', featureName]
             });
 
             if (!mapFeature.length) {
+                console.log('not here')
                 return;
             }
 
@@ -439,14 +452,23 @@ $(document).ready(function () {
         })
 
         amenityCategoryHeaders.on("click", function (event, d) {
+
+            map.resize();
             
-            var mapCat = '';
+            var mapCat =  d3.select(this).selectAll('div').nodes()[1].innerHTML;;
             //find 
-            var findCat = d3.select(this).selectAll("div").filter(function(d){
-                return this.innerHTML != "";
-            });
+
+            console.log(this);
+
+            var findCat = d3.select(this).selectAll('div').nodes()[1].innerHTML;
+
+            //console.log(findCat);
             
-            findCat.each(function(d)  {mapCat = this.innerHTML});    
+            // .filter(function(d){
+            //     return this.innerHTML != "";
+            // });
+            
+           // findCat.each(function(d)  {mapCat = this.innerHTML});    
             
             // .filter(function(d) {
             //     d3.select(this).html != "";
