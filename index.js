@@ -1,7 +1,7 @@
 
 //https://cdn.jsdelivr.net/gh//DDDgfx/tenx@973a7c6c5c752cc1500ea491a7ea13be75e16a48/index.js"
 
-//<script src="https://cdn.jsdelivr.net/gh//DDDgfx/tenx@973a7c6c5c752cc1500ea491a7ea13be75e16a48/index.js"></script>;
+//<script src="https://cdn.jsdelivr.net/gh//DDDgfx/tenx@a1b47381d17aa3b87be44e14562c2f5272fbf716/index.js"></script>;
 
 $(document).ready(function () {
 
@@ -410,6 +410,12 @@ $(document).ready(function () {
             })
             console.log(feature);
 
+            var resizeTimer = d3.timeout(function(e) {
+                console.log("resize!");
+                map.resize();
+
+            }, 1000); 
+
             createPopUp(feature);
 
         });
@@ -453,7 +459,13 @@ $(document).ready(function () {
 
         amenityCategoryHeaders.on("click", function (event, d) {
 
-            map.resize();
+
+            var resizeTimer = d3.timeout(function(e) {
+                console.log("resize!");
+                map.resize();
+
+            }, 1000); 
+            
             
             var mapCat =  d3.select(this).selectAll('div').nodes()[1].innerHTML;;
             //find 
